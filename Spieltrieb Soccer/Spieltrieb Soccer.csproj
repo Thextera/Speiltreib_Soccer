@@ -85,6 +85,11 @@
     <Compile Include="Assets\Scripts\Entities\Ball.cs" />
     <Compile Include="Assets\Scripts\Entities\PlayerCard.cs" />
     <Compile Include="Assets\Scripts\Entities\PlayerUnit.cs" />
+    <Compile Include="Assets\Scripts\States\PlayerChaseBall.cs" />
+    <Compile Include="Assets\Scripts\States\PlayerDecision.cs" />
+    <Compile Include="Assets\Scripts\States\PlayerRunAndDribble.cs" />
+    <Compile Include="Assets\Scripts\States\PlayerStateInterface.cs" />
+    <Compile Include="Assets\Scripts\States\PlayerWait.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

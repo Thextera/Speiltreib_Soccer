@@ -12,6 +12,8 @@ public class BallKick : MonoBehaviour {
     public float debugKickX;
     public float debugKickY;
     public float debugKickAng;
+
+    public bool slow;
     Ball ball;
     Rigidbody2D rb;
 
@@ -33,10 +35,11 @@ public class BallKick : MonoBehaviour {
     void Start () {
         ball = FindObjectOfType<Ball>();
         rb = ball.gameObject.GetComponent<Rigidbody2D>();
+        
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		
         //quick n dirty method to test if the kick function is working.
         if(debugKickX != 0 || debugKickY != 0 || debugKickAng != 0)
@@ -46,6 +49,17 @@ public class BallKick : MonoBehaviour {
             debugKickX = 0;
             debugKickY = 0;
             debugKickAng = 0;
+        }
+
+
+        //debug slowing method.
+        if (slow)
+        {
+            Time.timeScale = 0.2f;
+        }
+        else
+        {
+            Time.timeScale = 1;
         }
 	}
 }

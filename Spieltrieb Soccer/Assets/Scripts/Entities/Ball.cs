@@ -30,7 +30,7 @@ public class Ball : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 
         #region LooseBall
         if (possesed == false)
@@ -100,6 +100,9 @@ public class Ball : MonoBehaviour {
             //ading a small ammount of force based upon the angular momentum of the ball.
 
             // i guess ill figure this out later... this is apperntly quite the conundrum... O.o
+
+            //in addition to this maybe add height. expand size to give the illusion height.
+            
             #endregion
         }
     }
