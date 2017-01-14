@@ -82,7 +82,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Actions\BallKick.cs" />
+    <Compile Include="Assets\Scripts\Actions\PlayerMove.cs" />
     <Compile Include="Assets\Scripts\Entities\Ball.cs" />
+    <Compile Include="Assets\Scripts\Entities\Field.cs" />
     <Compile Include="Assets\Scripts\Entities\PlayerCard.cs" />
     <Compile Include="Assets\Scripts\Entities\PlayerUnit.cs" />
     <Compile Include="Assets\Scripts\States\PlayerChaseBall.cs" />

@@ -95,7 +95,7 @@ public class Ball : MonoBehaviour {
 
             #endregion
 
-            print(rb.velocity);
+            //print(rb.velocity);
             //EXPERIMENTAL
             //ading a small ammount of force based upon the angular momentum of the ball.
 
