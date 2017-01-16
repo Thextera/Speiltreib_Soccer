@@ -69,8 +69,23 @@ public class Field : MonoBehaviour{
         }
 
         //use the world origin of the feild then add the grid units (in world space) to convert the coordinates;
-        float coordinateX = fieldOrigin.x + (singleUnitSizeX*coordinateIn.x);
+        float coordinateX = fieldOrigin.x + (singleUnitSizeX * coordinateIn.x);
         float coordinateY = fieldOrigin.y + (singleUnitSizeY * coordinateIn.y);
+
+        Vector2 coordinateOut = new Vector2(coordinateX, coordinateY);
+
+        return coordinateOut;
+    }
+
+
+    public Vector2 ConvertGlobalToField(Vector2 coordinateIn)
+    {
+
+        //subtract the worldspace of the input from the field. divide the resultant value from the unit size will give you the grid location of an object.
+        float coordinateX = (coordinateIn.x - fieldOrigin.x) / singleUnitSizeX;
+        float coordinateY = (coordinateIn.y - fieldOrigin.y) / singleUnitSizeY;
+        
+        //TODO consider error checking. either of these coordinates are above 100 or below 0 the object in question is no longer on the feild.
 
         Vector2 coordinateOut = new Vector2(coordinateX, coordinateY);
 
