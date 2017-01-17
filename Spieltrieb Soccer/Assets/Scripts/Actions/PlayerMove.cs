@@ -6,11 +6,10 @@ public class PlayerMove : MonoBehaviour{
 
 
     //TODO GRAB ALL OF THESE VALUES FROM PLAYER CARD CLASS!!!
-    public float maxVelocity = 3.5f; //the speed of a player. bassed off of speed stat.
-    public float maxAcceleration = 10;
+    public float velocity = 2f; //the speed of a player. bassed off of speed stat.
+    public float movementAcceleration = 0.5f; // how quickly  player reaches their maximum speed.
+    public float minVelocity = 0.2f;//the minimum velocity the player can travel before they have to stop.
     public float targetRadius = 1; //if we are this close to our target we have arrived.
-    public float timeToTarget = 0.1f; //how long we want to take to reach max speed
-    public float finalStopVelThreashold = 0.2f;//the minimum velocity the player can travel before they have to stop.
     private Rigidbody2D rb;
 
     Field field;
@@ -29,6 +28,7 @@ public class PlayerMove : MonoBehaviour{
     //temporary. remove when done testing.
     void Update()
     {
+        print("Velocity= " + rb.velocity);
         if(gridy != -1 && gridx != -1)
         {
             MoveTo(new Vector2(gridx, gridy));
@@ -70,7 +70,7 @@ public class PlayerMove : MonoBehaviour{
         Vector2 destination = field.ConvertFieldCoordinateToGlobal(GridLocation);
 
         //begin the moving proccess.
-        print("starting routine.");
+        //print("starting routine.");
         StartCoroutine(Move(destination));
     }
 
@@ -83,19 +83,15 @@ public class PlayerMove : MonoBehaviour{
         //if the player is NOT at their destination move towards it.
         while(!atDestination)
         {
-            print("not at destination");
-            print(transform.position.x - destination.x);
-            print(transform.position.y - destination.y);
-            print(targetRadius);
             //TODO INVESTIGATE POSITIVE/NEGATIVE COORDINATE ISSUES...
             if (Mathf.Abs(transform.position.x - destination.x) > targetRadius && Mathf.Abs(transform.position.y - destination.y) > targetRadius)
             {
-                print("Moving");
+                //print("Moving");
                 //alter velocity here.
                 //desired_velocity = normalize(target - position) * max_velocity
                 //steering = desired_velocity - velocity
                 destinationVector = new Vector2(destination.x - transform.position.x, destination.y - transform.position.y);
-                rb.velocity = destinationVector * maxVelocity;
+                rb.velocity = destinationVector.normalized * velocity;
                 
             }
             else
@@ -106,11 +102,11 @@ public class PlayerMove : MonoBehaviour{
 
         }
             //if the player is not almost stopped then slow them quickly
-            while (Mathf.Abs(rb.velocity.x) > finalStopVelThreashold ||  Mathf.Abs(rb.velocity.y) > finalStopVelThreashold)
+            while (Mathf.Abs(rb.velocity.x) > minVelocity ||  Mathf.Abs(rb.velocity.y) > minVelocity)
             {
             print("slowing");
             //alter velocity here.
-            rb.velocity = Vector2.Lerp(rb.velocity,Vector2.zero,maxAcceleration);
+            rb.velocity = Vector2.Lerp(rb.velocity,Vector2.zero,movementAcceleration);
 
                 //if somehow we are no longer at destination break from this loop and end the coroutine.
                 if(!atDestination)
