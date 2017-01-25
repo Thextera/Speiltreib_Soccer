@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerDecision : IPlayerState
-{
+public class PlayerDead : IPlayerState {
 
     //what player owns this instance of the state?
     private readonly PlayerStatePattern player;
 
     //construct with a readonly directive telling what AI owns this instance. could be usefull.
-    public PlayerDecision(PlayerStatePattern playerStatePatern)
+    public PlayerDead(PlayerStatePattern playerStatePatern)
     {
         player = playerStatePatern;
     }
@@ -42,6 +41,11 @@ public class PlayerDecision : IPlayerState
     }
 
     public void ToPlayerWait()
+    {
+
+    }
+
+    public void ToPlayerDead()
     {
 
     }

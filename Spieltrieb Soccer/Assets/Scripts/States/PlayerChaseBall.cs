@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerChaseBall : IPlayerState {
 
+    int fcount = 9; //calls the MoveTo command every x frames.
+    Vector2 ballLocation;
+    float distanceFromBallX;
+    float distanceFromBallY;
 
     //what player owns this instance of the state?
     private readonly PlayerStatePattern player;
@@ -18,6 +22,28 @@ public class PlayerChaseBall : IPlayerState {
     public void UpdateState()
     {
 
+        fcount++;
+        if(fcount >= 10)
+        {
+            //grabs the location of the ball then tells the player to move to that location.
+            ballLocation = new Vector2(player.ballReference.transform.position.x, player.ballReference.transform.position.y);
+            player.movement.stopMove();
+
+            player.movement.MoveTo(Field.Instance.ConvertGlobalToField(ballLocation));
+            //reset our frame counter.
+            fcount = 0;
+        }
+
+        //check the distance from the ball.
+        distanceFromBallX = player.transform.position.x - player.ballReference.transform.position.x;
+        distanceFromBallY = player.transform.position.y - player.ballReference.transform.position.y;
+
+        //if the distance from the ball is small enough then possess the ball.
+        if (Mathf.Abs(distanceFromBallX) < player.possessionRange && Mathf.Abs(distanceFromBallY) < player.possessionRange && player)
+        {
+            player.possessesBall = true;
+            player.ballReference.PossessBall(player.gameObject);
+        }
     }
 
     //when the player gains possession of the ball trigger these actions.
@@ -42,6 +68,11 @@ public class PlayerChaseBall : IPlayerState {
     }
 
     public void ToPlayerWait()
+    {
+
+    }
+
+    public void ToPlayerDead()
     {
 
     }

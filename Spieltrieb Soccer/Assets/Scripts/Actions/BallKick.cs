@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Use this class if you want to tell the ball to be kicked. 
 /// later on different speeds can result in different things such as the ball being on fire or other effects. 
-/// if you want to do that add it in this class.
+/// if you want to do that, add it in this class.
 /// </summary>
 public class BallKick : MonoBehaviour {
 
@@ -20,13 +20,20 @@ public class BallKick : MonoBehaviour {
     //adds force to the ball as if it was kicked.
     void KickBall(Vector2 force)
     {
+        //tell the ball that it is loose and no one has possession of it.
+        ball.UnpossessBall();
+        //add the force of the kick to the ball.
         rb.AddForce(force);
     }
 
     //adds force to the ball AND spin as if it was kicked at an angle. 
     void KickBall(Vector2 force, float angSpeed)
-    {
+    { 
+        //tell the ball that it is loose and no one has possession of it.
+        ball.UnpossessBall();
+        //add the force of the kick to the ball.
         rb.AddForce(force);
+        //add rotation if needed.
         rb.angularVelocity = angSpeed;
     }
 

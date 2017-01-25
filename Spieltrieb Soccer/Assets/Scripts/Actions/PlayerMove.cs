@@ -28,7 +28,7 @@ public class PlayerMove : MonoBehaviour{
     //temporary. remove when done testing.
     void Update()
     {
-        print("Velocity= " + rb.velocity);
+        //print("Velocity= " + rb.velocity);
         if(gridy != -1 && gridx != -1)
         {
             MoveTo(new Vector2(gridx, gridy));
@@ -64,7 +64,7 @@ public class PlayerMove : MonoBehaviour{
     /// moves player to specific grid location. uses previously gathered speed to do calculations.
     /// </summary>
     /// <param name="GridLocation"></param>
-    void MoveTo(Vector2 GridLocation)
+    public void MoveTo(Vector2 GridLocation)
     {
         //convert grid location to something that the rigidbody can use.
         Vector2 destination = field.ConvertFieldCoordinateToGlobal(GridLocation);
@@ -84,9 +84,8 @@ public class PlayerMove : MonoBehaviour{
         while(!atDestination)
         {
             //TODO INVESTIGATE POSITIVE/NEGATIVE COORDINATE ISSUES...
-            if (Mathf.Abs(transform.position.x - destination.x) > targetRadius && Mathf.Abs(transform.position.y - destination.y) > targetRadius)
+            if (Mathf.Abs(transform.position.x - destination.x) > targetRadius || Mathf.Abs(transform.position.y - destination.y) > targetRadius)
             {
-                //print("Moving");
                 //alter velocity here.
                 //desired_velocity = normalize(target - position) * max_velocity
                 //steering = desired_velocity - velocity
@@ -119,8 +118,11 @@ public class PlayerMove : MonoBehaviour{
         //stop the player all together if we are at our destination.
         if (atDestination)
         {
-            print("stopping");
-            rb.velocity = Vector2.zero;
+            if (rb.velocity != Vector2.zero)
+            {
+                print("stopping");
+                rb.velocity = Vector2.zero;
+            }
         }
     }
 

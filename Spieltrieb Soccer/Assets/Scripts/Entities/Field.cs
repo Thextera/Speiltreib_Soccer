@@ -36,7 +36,7 @@ public class Field : MonoBehaviour{
 
     [Header("Stored Values")]
     float fieldLength; //real dimention of the field
-    float fieldWidth; 
+    float fieldWidth;
     Vector2 fieldLocation; //where in the world the field is
     Vector2 fieldOrigin; //world coordinates for the 0.0 of the field grid.
 
@@ -44,6 +44,7 @@ public class Field : MonoBehaviour{
     float singleUnitSizeY;
 
     void Start () {
+        //TODO changing the sprite might have an odd effect on these calculations. may have to find a better way to do them once art comes in.
         sr = GetComponent<SpriteRenderer>();
 
         fieldWidth = sr.bounds.size.x;
@@ -90,15 +91,6 @@ public class Field : MonoBehaviour{
         Vector2 coordinateOut = new Vector2(coordinateX, coordinateY);
 
         return coordinateOut;
-    }
-
-    /// <summary>
-    /// checks if player is in the easternmost portion of the field.
-    /// </summary>
-    /// <returns></returns>
-    bool CheckMidE()
-    {
-        return false;
     }
 	
 }

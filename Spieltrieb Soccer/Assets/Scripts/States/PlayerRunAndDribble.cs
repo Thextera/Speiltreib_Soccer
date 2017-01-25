@@ -45,4 +45,9 @@ public class PlayerRunAndDribble : IPlayerState {
     {
 
     }
+
+    public void ToPlayerDead()
+    {
+
+    }
 }

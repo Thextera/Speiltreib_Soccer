@@ -45,4 +45,9 @@ public class PlayerWait : IPlayerState {
     {
 
     }
+
+    public void ToPlayerDead()
+    {
+
+    }
 }

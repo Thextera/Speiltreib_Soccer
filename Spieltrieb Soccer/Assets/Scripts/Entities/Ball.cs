@@ -114,4 +114,16 @@ public class Ball : MonoBehaviour {
         rb.velocity = new Vector2(rb.velocity.x * energyLostOnCollision, rb.velocity.y * energyLostOnCollision);
         //rb.angularVelocity = rb.angularVelocity * angVelLostOnCollision;
     }
+
+    public void PossessBall(GameObject possessingUnit)
+    {
+        possesed = true;
+        transform.parent = possessingUnit.transform;
+    }
+
+    public void UnpossessBall()
+    {
+        possesed = false;
+        transform.parent = null;
+    }
 }
