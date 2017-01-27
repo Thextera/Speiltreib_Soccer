@@ -36,6 +36,8 @@ public class GameManager : MonoBehaviour {
     public Dictionary<string, int> positions;
     public Dictionary<string, int> teams;
 
+    PlayerInit[] testInitList;
+
     void Awake()
     {
         positions = new Dictionary<string, int>();
@@ -58,11 +60,20 @@ public class GameManager : MonoBehaviour {
 
         //TODO remove this.
         //debug create player :D
-        PlayerCard initPCard = new PlayerCard(10,20,12,112,20,4,"bob",GameManager.Instance.positions["Forward"],99);
-        PlayerInit i = new PlayerInit(initPCard,Vector2.zero,GameManager.Instance.teams["Right"],null);
-        PlayerInit[] testInitList = new PlayerInit[1];
-        testInitList[0] = i;
 
+        testInitList = new PlayerInit[12];
+        DebugCreatePlayer("Defence", "Right", 0, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(10, 10)));
+        DebugCreatePlayer("Defence", "Right", 1, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(10, 20)));
+        DebugCreatePlayer("Defence", "Right", 2, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(10, 30)));
+        DebugCreatePlayer("Forward", "Right", 3, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(10, 40)));
+        DebugCreatePlayer("Forward", "Right", 4, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(10, 50)));
+        DebugCreatePlayer("Forward", "Right", 5, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(10, 60)));
+                                                 
+        DebugCreatePlayer("Defence", "Left", 6,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(90, 10)));
+        DebugCreatePlayer("Defence", "Left", 7,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(90, 30)));
+        DebugCreatePlayer("Defence", "Left", 8,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(90, 50)));
+        DebugCreatePlayer("Forward", "Left", 9,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(90, 70)));
+        DebugCreatePlayer("Forward", "Left", 10, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(90, 90)));
         BeginGame(testInitList);
     }
 
@@ -73,22 +84,25 @@ public class GameManager : MonoBehaviour {
 
         foreach(PlayerInit pi in playerList)
         {
-            //create player instance
-            GameObject g = Instantiate(player);
+            if (pi != null)
+            {
+                //create player instance
+                GameObject g = Instantiate(player);
 
-            //save player instance to list.
-            Player p = g.GetComponent<Player>();
-            //print(players + "player list");
-            //print(p + "player current");
-            players[i] = p;
+                //save player instance to list.
+                Player p = g.GetComponent<Player>();
+                //print(players + "player list");
+                //print(p + "player current");
+                players[i] = p;
 
-            //run the player's constructor so it correctly sets all its own values.
-            //thar be dragons... :(
-            p.SetPlayerStartingValues(pi.pCard.speed,  pi.pCard.attack,  pi.pCard.defence,  pi.pCard.shoot,  pi.pCard.pass,  pi.pCard.dribble,  pi.teamNumber,  pi.pCard.position,  pi.fieldStartPosition,  pi.pCard.playerName);
+                //run the player's constructor so it correctly sets all its own values.
+                //thar be dragons... :(
+                p.SetPlayerStartingValues(pi.pCard.speed, pi.pCard.attack, pi.pCard.defence, pi.pCard.shoot, pi.pCard.pass, pi.pCard.dribble, pi.teamNumber, pi.pCard.position, pi.fieldStartPosition, pi.pCard.playerName);
 
-            //TODO possibly set up a second constructor for visuals.
+                //TODO possibly set up a second constructor for visuals.
 
-            i++;
+                i++;
+            }
         }
     }
 
@@ -101,6 +115,13 @@ public class GameManager : MonoBehaviour {
         {
             EventManager.Instance.FirstWhistleBlow();
         }
+    }
+
+    private void DebugCreatePlayer(string position, string team, int index, Vector2 startingPos)
+    {
+        PlayerCard initPCard = new PlayerCard(10, 20, 12, 112, 20, 4, "bob", GameManager.Instance.positions[position], 99);
+        PlayerInit i = new PlayerInit(initPCard, startingPos, GameManager.Instance.teams[team], null);
+        testInitList[index] = i;
     }
 
 }
