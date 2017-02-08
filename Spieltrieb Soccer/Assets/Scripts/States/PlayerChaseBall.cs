@@ -21,6 +21,19 @@ public class PlayerChaseBall : IPlayerState {
     //default state actions. frame by fram actions.
     public void UpdateState()
     {
+        //if the ball has an owner dont bother chasing it anymore.
+        if(player.ballReference.IsPossessed())
+        {
+            //if i have the ball decide what to do with it
+            if(player.possessesBall)
+            {
+                ToActionDesicion();
+            }
+            else //if anyone else has the ball move to a better position.
+            {
+                ToMovementDesicion();
+            }
+        }
 
         fcount++;
         if(fcount >= 10)
@@ -39,7 +52,7 @@ public class PlayerChaseBall : IPlayerState {
         distanceFromBallY = player.transform.position.y - player.ballReference.transform.position.y;
 
         //if the distance from the ball is small enough then possess the ball.
-        if (Mathf.Abs(distanceFromBallX) < player.possessionRange && Mathf.Abs(distanceFromBallY) < player.possessionRange && player)
+        if (Mathf.Abs(distanceFromBallX) < player.possessionRange && Mathf.Abs(distanceFromBallY) < player.possessionRange && !player.ballReference.IsPossessed())
         {
             player.possessesBall = true;
             player.ballReference.PossessBall(player.gameObject);
@@ -75,5 +88,16 @@ public class PlayerChaseBall : IPlayerState {
     public void ToPlayerDead()
     {
 
+    }
+
+    public void ToMovementDesicion()
+    {
+        player.currentState = player.sPlayerMovementDecision;
+        Debug.Log("Left Chase State");
+    }
+
+    public void ToActionDesicion()
+    {
+        player.currentState = player.sPlayerActionDecision;
     }
 }

@@ -42,16 +42,15 @@ public class PlayerMovementDecision : IPlayerState {
     //default state actions. frame by fram actions.
     public void UpdateState()
     {
-        teamPlayers = new Player[GameManager.Instance.players.Length];
-        enemyPlayers = new Player[GameManager.Instance.players.Length];
+        teamPlayers = new Player[GameManager.Instance.GetPlayers().Length];
+        enemyPlayers = new Player[GameManager.Instance.GetPlayers().Length];
         iTeam = 0;
         iFoe = 0;
         //iterate through the list of players
-        foreach(Player p in GameManager.Instance.players)
+        foreach(Player p in GameManager.Instance.GetPlayers())
         {
-            //ignore the player with the same name as myself and ignore dead players.
-            //TODO check if object cast screws up statement.
-            if(p != null && p.playerName != player.playerStats.playerName && p.psp.currentState != p.psp.sPlayerDead)
+            //ignore the player with the same ObjectID as myself and ignore dead players.
+            if(p != null && p.GetInstanceID() != player.GetInstanceID() && p.psp.currentState != p.psp.sPlayerDead)
             {
                 //does this player have the ball?
                 if (p.psp.possessesBall)
@@ -90,10 +89,10 @@ public class PlayerMovementDecision : IPlayerState {
             if (distanceX < player.playerStats.engageDistance && distanceY < player.playerStats.engageDistance)
             {
                 //if its close, move in to engage.(go to player moving to position state headed toward enemy player. that state should begin the engage desicion.)
-                player.playerStats.pm.stopMove();
+                player.movement.stopMove();
                 //use location of enemy holding ball as target.
                 Vector2 EngageLocation = Field.Instance.ConvertGlobalToField(new Vector2(ballOwner.transform.position.x, ballOwner.transform.position.y));
-                player.playerStats.pm.MoveTo(EngageLocation);
+                player.movement.MoveTo(EngageLocation);
 
                 //change to appropreate state.
                 ToPlayerMovingToPosition();
@@ -137,6 +136,7 @@ public class PlayerMovementDecision : IPlayerState {
                 //3 or less attackers, 2 people chase. 4 or more attackers, 3 people chase.
                 if (suitableplayercount < 2)
                 {
+                    Debug.Log("Movement decided to chase." + suitableplayercount + teamPlayers);
                     ToPlayerChaseBall();
                 }
                 suitableplayercount = 0;
@@ -332,7 +332,7 @@ public class PlayerMovementDecision : IPlayerState {
     /// </summary>
     private void GoToPosition(Vector2 position)
     {
-        Debug.Log(position);
+        //Debug.Log(position);
         player.movement.stopMove();
         player.movement.MoveTo(position);
         player.currentState = player.sPlayerMovingToPosition;

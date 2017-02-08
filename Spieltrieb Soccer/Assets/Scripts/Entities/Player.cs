@@ -21,8 +21,15 @@ public class Player : MonoBehaviour {
     public int position;
     public int team;
 
+    public bool AI;
+
     public float engageDistance = 5;
     public float ballEngageDistance = 7.5f;
+
+    //target ranges to make desicions off of. 
+    public float targetLongRange = 10;
+    public float targetMidRange = 5;
+    public float targetShortRange = 1;
 
     /// <summary>
     /// initializes player. MUST BE CALLED WHEN INSTANCING A PLAYER OR ELSE DEFAULT VALUES WILL BE GIVEN.
@@ -34,7 +41,7 @@ public class Player : MonoBehaviour {
     /// <param name="initPass">starting passing skill</param>
     /// <param name="initDribble">starting dribbling skill</param>
     /// /// <param name="initPlayerName">players name for UI reference</param>
-    public void SetPlayerStartingValues(float initSpeed, float initAttack, float initDefence, float initShoot, float initPass, float initDribble, int initTeam, int initPosition, Vector2 initLocation, string initPlayerName)
+    public void SetPlayerStartingValues(float initSpeed, float initAttack, float initDefence, float initShoot, float initPass, float initDribble, int initTeam, int initPosition, Vector2 initLocation, string initPlayerName, bool initAI)
     {
         //set our class variables.
         speed = initSpeed;
@@ -46,6 +53,8 @@ public class Player : MonoBehaviour {
         dribble = initDribble;
         position = initPosition;
         playerName = initPlayerName;
+        AI = initAI;
+        
 
         //find our movement class.
         pm = GetComponent<PlayerMove>();
@@ -84,7 +93,7 @@ public class Player : MonoBehaviour {
             //pm.movementAcceleration = 0;
             //pm.targetRadius = 0;
             //pm.minVelocity = 0;
-            print("speed updated! :D");
+            //print("speed updated! :D");
         }
         else
         {

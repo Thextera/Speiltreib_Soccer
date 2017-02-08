@@ -34,11 +34,13 @@ public class GoalZone : MonoBehaviour {
         //values will differ if the goal is on the right or left side of the feild.
         if (facingRight)
         {
+            team = GameManager.Instance.teams["Right"];
             goalPostOne.x = rightFace;
             goalPostTwo.x = rightFace;
         }
         else
         {
+            team = GameManager.Instance.teams["Left"];
             goalPostOne.x = leftFace;
             goalPostTwo.x = leftFace;
         }

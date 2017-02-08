@@ -40,6 +40,8 @@ public class Field : MonoBehaviour{
     Vector2 fieldLocation; //where in the world the field is
     Vector2 fieldOrigin; //world coordinates for the 0.0 of the field grid.
 
+    public GoalZone[] gz;
+
     float singleUnitSizeX; //how many world units one grid unit on the field is. looks at both X and Y axis seperately.
     float singleUnitSizeY;
 
@@ -54,6 +56,8 @@ public class Field : MonoBehaviour{
 
         singleUnitSizeX = fieldWidth / 100;
         singleUnitSizeY = fieldLength / 100;
+
+        gz = FindObjectsOfType<GoalZone>();
 
     }
 

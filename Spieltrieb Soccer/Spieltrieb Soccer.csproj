@@ -82,8 +82,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\AI\PlayerStatePattern.cs" />
+    <Compile Include="Assets\Scripts\Actions\Attack.cs" />
     <Compile Include="Assets\Scripts\Actions\BallKick.cs" />
+    <Compile Include="Assets\Scripts\Actions\Clear.cs" />
+    <Compile Include="Assets\Scripts\Actions\Cross.cs" />
+    <Compile Include="Assets\Scripts\Actions\Dribble.cs" />
+    <Compile Include="Assets\Scripts\Actions\Pass.cs" />
     <Compile Include="Assets\Scripts\Actions\PlayerMove.cs" />
+    <Compile Include="Assets\Scripts\Actions\Shoot.cs" />
+    <Compile Include="Assets\Scripts\Actions\Steal.cs" />
+    <Compile Include="Assets\Scripts\ContainerClasses\DesicionEntery.cs" />
     <Compile Include="Assets\Scripts\Entities\Ball.cs" />
     <Compile Include="Assets\Scripts\Entities\CameraControl.cs" />
     <Compile Include="Assets\Scripts\Entities\Field.cs" />

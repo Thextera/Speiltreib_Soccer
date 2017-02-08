@@ -118,12 +118,20 @@ public class Ball : MonoBehaviour {
     public void PossessBall(GameObject possessingUnit)
     {
         possesed = true;
+        rb.isKinematic = true;
         transform.parent = possessingUnit.transform;
+        EventManager.Instance.BallPossessed();
     }
 
     public void UnpossessBall()
     {
         possesed = false;
+        rb.isKinematic = false;
         transform.parent = null;
+    }
+
+    public bool IsPossessed()
+    {
+        return possesed;
     }
 }

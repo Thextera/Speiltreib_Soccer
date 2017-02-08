@@ -10,7 +10,7 @@ public class PlayerStatePattern : MonoBehaviour {
     public float possessionRange;
     public Player playerStats;
 
-    [HideInInspector] public IPlayerState currentState;
+    public IPlayerState currentState;
     [HideInInspector] public PlayerWait sPlayerWait;
     [HideInInspector] public PlayerDead sPlayerDead;
     [HideInInspector] public PlayerChaseBall sPlayerChaseBall;
@@ -21,6 +21,8 @@ public class PlayerStatePattern : MonoBehaviour {
 
     private void Awake()
     {
+        playerStats = GetComponent<Player>();
+
         sPlayerWait = new PlayerWait(this);
         sPlayerDead = new PlayerDead(this);
         sPlayerChaseBall = new PlayerChaseBall(this);
@@ -28,20 +30,20 @@ public class PlayerStatePattern : MonoBehaviour {
         sPlayerActionDecision = new PlayerActionDecision(this);
         sPlayerMovementDecision = new PlayerMovementDecision(this);
         sPlayerMovingToPosition = new PlayerMovingToPosition(this);
-        playerStats = GetComponent<Player>();
-
     }
 
     private void OnEnable()
     {
         //sub to events here.
         EventManager.OnFirstWhistleBlow += EngagePlayerMovement;
+        EventManager.OnBallPossessed += PlayerPossession;
     }
 
     private void OnDisable()
     {
         //unsub to events here.
         EventManager.OnFirstWhistleBlow -= EngagePlayerMovement;
+        EventManager.OnBallPossessed -= PlayerPossession;
     }
 
 
@@ -67,5 +69,17 @@ public class PlayerStatePattern : MonoBehaviour {
     {
         currentState = sPlayerMovementDecision;
     }
+
+
+    void PlayerPossession()
+    {
+        if(currentState == sPlayerChaseBall)
+        {
+            print(this + ", " + currentState);
+            currentState = sPlayerMovementDecision;
+            print(this + ", " + currentState);
+        }
+    }
+
 
 }

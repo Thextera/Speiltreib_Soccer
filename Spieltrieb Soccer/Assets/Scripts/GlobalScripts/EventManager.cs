@@ -43,6 +43,9 @@ public class EventManager : MonoBehaviour {
     public delegate void GameEndAction();
     public static event GameEndAction OnGameOver;
 
+    public delegate void BallPossessedAction();
+    public static event BallPossessedAction OnBallPossessed;
+
     /*
     void OnGUI()
     {
@@ -54,9 +57,10 @@ public class EventManager : MonoBehaviour {
     }
     */
 
-        //if any function calls goal and gives a team it triggers evey obeject subscribed to respond to said goal.
+    //if any function calls goal and gives a team it triggers evey obeject subscribed to respond to said goal.
     public void Goal(int team)
     {
+        //check if anyone is subscribed. 
         if (OnGoal != null)
         {
             OnGoal(team);
@@ -69,5 +73,14 @@ public class EventManager : MonoBehaviour {
         {
             OnFirstWhistleBlow();
         }
+    }
+
+    public void BallPossessed()
+    {
+       // if(OnBallPossessed != null)
+       // {
+       //     Debug.Log("POSSESED");
+       //     OnBallPossessed();
+       // }
     }
 }

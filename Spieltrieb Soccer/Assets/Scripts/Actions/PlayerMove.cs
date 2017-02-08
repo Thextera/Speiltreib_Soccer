@@ -103,7 +103,7 @@ public class PlayerMove : MonoBehaviour{
             //if the player is not almost stopped then slow them quickly
             while (Mathf.Abs(rb.velocity.x) > minVelocity ||  Mathf.Abs(rb.velocity.y) > minVelocity)
             {
-            print("slowing");
+            //print("slowing");
             //alter velocity here.
             rb.velocity = Vector2.Lerp(rb.velocity,Vector2.zero,movementAcceleration);
 
@@ -120,7 +120,7 @@ public class PlayerMove : MonoBehaviour{
         {
             if (rb.velocity != Vector2.zero)
             {
-                print("stopping");
+                //print("stopping");
                 rb.velocity = Vector2.zero;
             }
         }
