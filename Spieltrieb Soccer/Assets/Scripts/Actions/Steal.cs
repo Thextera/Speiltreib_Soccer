@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class Steal{
 
-    public void AISteal(ref Player pl)
+    float waitDelay = 0;
+
+    public float AISteal(ref Player pl)
     {
         Debug.Log("steal triggered");
+        return waitDelay;
     }
 
-    public void UserSteal(ref Player pl)
+    public float UserSteal(ref Player pl)
     {
-
+        return waitDelay;
     }
 }

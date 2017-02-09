@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Attack : MonoBehaviour {
+public class Attack {
 
-    public void AIAttack(ref Player pl)
+    float waitDelay = 0;
+
+    public float AIAttack(ref Player pl)
     {
         Debug.Log("Attack triggered");
+        return waitDelay;
     }
 
-    public void UserAttack(ref Player pl)
+    public float UserAttack(ref Player pl)
     {
-
+        return waitDelay;
     }
 }

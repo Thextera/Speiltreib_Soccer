@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class Cross{
 
-    public void AICross(ref Player pl)
+    float waitDelay = 0;
+
+    public float AICross(ref Player pl)
     {
         Debug.Log("cross triggered");
+        return waitDelay;
     }
 
-    public void UserCross(ref Player pl)
+    public float UserCross(ref Player pl)
     {
-
+        return waitDelay;
     }
 }

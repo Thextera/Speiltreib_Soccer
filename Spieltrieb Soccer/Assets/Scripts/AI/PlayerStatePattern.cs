@@ -59,6 +59,7 @@ public class PlayerStatePattern : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        //print(currentState + " + " + gameObject);
         currentState.UpdateState();
     }
 
@@ -78,6 +79,15 @@ public class PlayerStatePattern : MonoBehaviour {
             print(this + ", " + currentState);
             currentState = sPlayerMovementDecision;
             print(this + ", " + currentState);
+        }
+    }
+
+    private void AtDestination()
+    {
+        print("I'm here");
+        if(currentState == sPlayerMovingToPosition)
+        {
+            currentState = sPlayerActionDecision;
         }
     }
 

@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class Pass{
 
-    public void AIPass(ref Player pl)
+    float waitDelay = 0;
+
+    public float AIPass(ref Player pl)
     {
         Debug.Log("pass triggered");
+        return waitDelay;
     }
 
-    public void UserPass(ref Player pl)
+    public float UserPass(ref Player pl)
     {
-
+        return waitDelay;
     }
 }

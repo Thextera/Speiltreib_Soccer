@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class Shoot {
 
-    public void AIShoot(ref Player pl)
+    float waitDelay = 0;
+
+    public float AIShoot(ref Player pl)
     {
         Debug.Log("shoot triggered");
+        return waitDelay;
     }
 
-    public void UserShoot(ref Player pl)
+    public float UserShoot(ref Player pl)
     {
-
+        return waitDelay;
     }
 
 }

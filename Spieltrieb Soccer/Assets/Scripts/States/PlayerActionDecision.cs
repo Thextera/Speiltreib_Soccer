@@ -32,6 +32,7 @@ public class PlayerActionDecision : IPlayerState
     private float n;
 
     private bool teamsArentSet; //a value that allows the system to set who is on what team once and once only.
+    private float waitDelay;
 
     //shoot pass attack.
     //steal pass attack.
@@ -131,53 +132,61 @@ public class PlayerActionDecision : IPlayerState
             }
         }
 
-        //call action here
-        //I WOULDVE RATHERED USE A SWITCH STATEMENT BUT I GUESS C# DOESNT LIKE USING THOSE WITH DICTIONARIES >.> #sass
-        if(chosenOption.name == GameManager.Instance.AIActions["Attack"])
-        {
-            attack.AIAttack(ref player.playerStats);
-        }
-        else if (chosenOption.name == GameManager.Instance.AIActions["Pass"])
-        {
-            Pass.AIPass(ref player.playerStats);
-        }
-        else if (chosenOption.name == GameManager.Instance.AIActions["Shoot"])
-        {
-            shoot.AIShoot(ref player.playerStats);
-        }
-        else if (chosenOption.name == GameManager.Instance.AIActions["Dribble"])
-        {
-            dribble.AIDribble(ref player.playerStats);
-        }
-        else if (chosenOption.name == GameManager.Instance.AIActions["Cross"])
-        {
-            cross.AICross(ref player.playerStats);
-        }
-        else if (chosenOption.name == GameManager.Instance.AIActions["Clear"])
-        {
-            clear.AIClear(ref player.playerStats);
-        }
-        else if (chosenOption.name == GameManager.Instance.AIActions["Steal"])
-        {
-            steal.AISteal(ref player.playerStats);
-        }
-        else if (chosenOption.name == GameManager.Instance.AIActions["NotOpen"])
+        if (chosenOption != null)//if it skips this code then no option was seen. this is more than likely an error.
         {
 
-        }
-        else if (chosenOption.name == GameManager.Instance.AIActions["Dive"])
-        {
+            //call action here
+            //I WOULDVE RATHERED USE A SWITCH STATEMENT BUT I GUESS C# DOESNT LIKE USING THOSE WITH DICTIONARIES >.> #sass
+            if (chosenOption.name == GameManager.Instance.AIActions["Attack"])
+            {
+                waitDelay = attack.AIAttack(ref player.playerStats);
+            }
+            else if (chosenOption.name == GameManager.Instance.AIActions["Pass"])
+            {
+                waitDelay = Pass.AIPass(ref player.playerStats);
+            }
+            else if (chosenOption.name == GameManager.Instance.AIActions["Shoot"])
+            {
+                waitDelay = shoot.AIShoot(ref player.playerStats);
+            }
+            else if (chosenOption.name == GameManager.Instance.AIActions["Dribble"])
+            {
+                waitDelay = dribble.AIDribble(ref player.playerStats);
+            }
+            else if (chosenOption.name == GameManager.Instance.AIActions["Cross"])
+            {
+                waitDelay = cross.AICross(ref player.playerStats);
+            }
+            else if (chosenOption.name == GameManager.Instance.AIActions["Clear"])
+            {
+                waitDelay = clear.AIClear(ref player.playerStats);
+            }
+            else if (chosenOption.name == GameManager.Instance.AIActions["Steal"])
+            {
+                waitDelay = steal.AISteal(ref player.playerStats);
+            }
+            else if (chosenOption.name == GameManager.Instance.AIActions["NotOpen"])
+            {
 
-        }
-        else
-        {
-            Debug.LogError("Something went wrong when choosing an action. Chosen option name is invalid. Please check chosen option name.");
+            }
+            else if (chosenOption.name == GameManager.Instance.AIActions["Dive"])
+            {
+
+            }
+            else
+            {
+                Debug.LogError("Something went wrong when choosing an action. Chosen option name is invalid. Please check chosen option name.");
+            }
+
         }
 
         //reset option list.
         options = new DecisionEntery[options.Length];
         forwardOptions = new DecisionEntery[forwardOptions.Length];
         defenceOptions = new DecisionEntery[defenceOptions.Length];
+
+        //move to wait state.
+        ToPlayerWait(waitDelay);
     }
 
     //when the player gains possession of the ball trigger these actions.
@@ -199,6 +208,13 @@ public class PlayerActionDecision : IPlayerState
     public void ToPlayerRunAndDribble()
     {
 
+    }
+
+    public void ToPlayerWait(float wd)
+    {
+        //set the delay on the wait then engage the state.
+        player.sPlayerWait.SetCurrentWait(wd);
+        player.currentState = player.sPlayerWait;
     }
 
     public void ToPlayerWait()

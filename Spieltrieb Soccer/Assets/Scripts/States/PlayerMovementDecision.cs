@@ -95,7 +95,7 @@ public class PlayerMovementDecision : IPlayerState {
                 player.movement.MoveTo(EngageLocation);
 
                 //change to appropreate state.
-                ToPlayerMovingToPosition();
+                ToPlayerMovingToPosition(EngageLocation);
             }
             else
             {
@@ -185,8 +185,9 @@ public class PlayerMovementDecision : IPlayerState {
 
     }
 
-    public void ToPlayerMovingToPosition()
+    public void ToPlayerMovingToPosition(Vector2 destination)
     {
+        player.sPlayerMovingToPosition.SetPosition(destination);
         player.currentState = player.sPlayerMovingToPosition;
     }
 
@@ -336,6 +337,7 @@ public class PlayerMovementDecision : IPlayerState {
         player.movement.stopMove();
         player.movement.MoveTo(position);
         player.currentState = player.sPlayerMovingToPosition;
+        player.sPlayerMovingToPosition.SetPosition(position);
     }
 
 }

@@ -4,13 +4,16 @@ using UnityEngine;
 
 public class Clear {
 
-    public void AIClear(ref Player pl)
+    float waitDelay = 0;
+
+    public float AIClear(ref Player pl)
     {
         Debug.Log("clear triggered");
+        return waitDelay;
     }
 
-    public void UserClear(ref Player pl)
+    public float UserClear(ref Player pl)
     {
-
+        return waitDelay;
     }
 }

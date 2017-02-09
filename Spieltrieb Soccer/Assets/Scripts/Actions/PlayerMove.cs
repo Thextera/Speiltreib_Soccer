@@ -56,7 +56,8 @@ public class PlayerMove : MonoBehaviour{
     {
         //tell the AI it is at its destination so it breaks from its movement coroutine.
         StopAllCoroutines();
-        atDestination = true; 
+        atDestination = true;
+        gameObject.SendMessage("AtDestination");
     }
 
 
@@ -122,6 +123,7 @@ public class PlayerMove : MonoBehaviour{
             {
                 //print("stopping");
                 rb.velocity = Vector2.zero;
+                gameObject.SendMessage("AtDestination");
             }
         }
     }
