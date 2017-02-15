@@ -6,13 +6,13 @@ public class Cross{
 
     float waitDelay = 0;
 
-    public float AICross(ref Player pl)
+    public float AICross(PlayerStatePattern pl, DecisionEntery de)
     {
         Debug.Log("cross triggered");
         return waitDelay;
     }
 
-    public float UserCross(ref Player pl)
+    public float UserCross(PlayerStatePattern pl, DecisionEntery de)
     {
         return waitDelay;
     }

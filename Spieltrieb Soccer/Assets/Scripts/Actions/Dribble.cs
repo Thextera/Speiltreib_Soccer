@@ -6,13 +6,13 @@ public class Dribble{
 
     float waitDelay = 0;
 
-    public float AIDribble(ref Player pl)
+    public float AIDribble(PlayerStatePattern pl, DecisionEntery de)
     {
         Debug.Log("Dribble triggered");
         return waitDelay;
     }
 
-    public float UserDribble(ref Player pl)
+    public float UserDribble(PlayerStatePattern pl, DecisionEntery de)
     {
         return waitDelay;
     }

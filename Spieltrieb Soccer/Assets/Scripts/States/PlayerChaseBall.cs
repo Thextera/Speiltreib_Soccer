@@ -90,6 +90,11 @@ public class PlayerChaseBall : IPlayerState {
 
     }
 
+    public string ReturnNameString()
+    {
+        return "ChaseBall";
+    }
+
     public void ToMovementDesicion()
     {
         player.currentState = player.sPlayerMovementDecision;

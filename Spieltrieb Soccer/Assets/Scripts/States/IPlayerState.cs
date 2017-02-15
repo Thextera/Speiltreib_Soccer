@@ -20,4 +20,6 @@ public interface IPlayerState {
         void ToPlayerRunAndDribble();
 
         void ToPlayerWait();
+
+        string ReturnNameString();
 }

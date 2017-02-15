@@ -74,5 +74,10 @@ public class PlayerMovingToPosition : IPlayerState {
     {
         destination = pos;
     }
+
+    public string ReturnNameString()
+    {
+        return "MovingToPosition";
+    }
 }
 

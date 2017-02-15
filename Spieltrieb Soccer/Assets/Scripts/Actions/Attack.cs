@@ -6,13 +6,24 @@ public class Attack {
 
     float waitDelay = 0;
 
-    public float AIAttack(ref Player pl)
+    public float AIAttack(PlayerStatePattern pl, DecisionEntery de)
     {
-        Debug.Log("Attack triggered");
+        Vector2 kickDirection;
+
+        kickDirection = (de.target.transform.position - pl.transform.position);
+        kickDirection.Normalize();
+
+        kickDirection = new Vector2(kickDirection.x * pl.playerStats.attack * pl.playerStats.attackStrengthMultiplier, kickDirection.y * pl.playerStats.attack * pl.playerStats.attackStrengthMultiplier);
+
+        GameManager.Instance.GetComponent<BallKick>().KickBall(kickDirection);
+        pl.possessesBall = false;
+
+        Debug.Log(de.target.playerName);
+        Debug.Log("Attack triggered by " + pl.playerStats.playerName + " towards: " + kickDirection);
         return waitDelay;
     }
 
-    public float UserAttack(ref Player pl)
+    public float UserAttack(PlayerStatePattern pl, DecisionEntery de)
     {
         return waitDelay;
     }

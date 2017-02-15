@@ -6,13 +6,13 @@ public class Clear {
 
     float waitDelay = 0;
 
-    public float AIClear(ref Player pl)
+    public float AIClear(PlayerStatePattern pl, DecisionEntery de)
     {
         Debug.Log("clear triggered");
         return waitDelay;
     }
 
-    public float UserClear(ref Player pl)
+    public float UserClear(PlayerStatePattern pl, DecisionEntery de)
     {
         return waitDelay;
     }

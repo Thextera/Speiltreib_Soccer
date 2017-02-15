@@ -18,6 +18,7 @@ public class PlayerMovementDecision : IPlayerState {
     //reuseable variables to save on memory.
     private float distanceX;
     private float distanceY;
+    private float distance;
 
     private int iTeam;
     private int iFoe;
@@ -103,29 +104,27 @@ public class PlayerMovementDecision : IPlayerState {
                 GoToPosition(CalculatePosition(teamPlayers,enemyPlayers,false));
             }
 
-            distanceX = 0;
-            distanceY = 0;
+            distance = 0;
         }
         //if noone has the ball (It must be a loose ball.)
         else
         {
-            distanceX = player.ballReference.transform.position.x - player.transform.position.x;
-            distanceY = player.ballReference.transform.position.y - player.transform.position.y;
+            //grab distance between me and the ball
+            distance = Vector2.Distance(player.ballReference.transform.position, player.transform.position);
 
             //if i am close then check for other players chasing / closer.
-            if (distanceX < player.playerStats.ballEngageDistance && distanceY < player.playerStats.ballEngageDistance)
+            if (distance < player.playerStats.ballEngageDistance)
             {
                 // check who is close to the ball and if anyone is already chasing
                 foreach (Player p in teamPlayers)
                 {
                     if (p != null)
                     {
-                        distanceX = 0;
-                        distanceY = 0;
+                        distance = 0;
 
-                        distanceX = player.ballReference.transform.position.x - p.transform.position.x;
-                        distanceY = player.ballReference.transform.position.y - p.transform.position.y;
-                        if (distanceY < p.ballEngageDistance && distanceX < p.ballEngageDistance && p.psp.currentState == p.psp.sPlayerChaseBall)
+                        distance = Vector2.Distance(player.ballReference.transform.position, p.transform.position);
+
+                        if (distance < p.ballEngageDistance && p.psp.currentState == p.psp.sPlayerChaseBall)
                         {
                             //add all players that are chasing the ball or very close to it here.
                             suitableplayercount++;
@@ -138,6 +137,11 @@ public class PlayerMovementDecision : IPlayerState {
                 {
                     Debug.Log("Movement decided to chase." + suitableplayercount + teamPlayers);
                     ToPlayerChaseBall();
+                }
+                else
+                {
+                    //TODO properly set the bool in this statement.
+                    GoToPosition(CalculatePosition(teamPlayers, enemyPlayers, true));
                 }
                 suitableplayercount = 0;
             }
@@ -189,6 +193,11 @@ public class PlayerMovementDecision : IPlayerState {
     {
         player.sPlayerMovingToPosition.SetPosition(destination);
         player.currentState = player.sPlayerMovingToPosition;
+    }
+
+    public string ReturnNameString()
+    {
+        return "MovementDecision";
     }
 
     //TODO reveiw this method and refactor/improve if needed. Its an ugly mess and i dont like it.

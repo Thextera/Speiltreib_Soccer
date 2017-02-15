@@ -6,13 +6,13 @@ public class Steal{
 
     float waitDelay = 0;
 
-    public float AISteal(ref Player pl)
+    public float AISteal(PlayerStatePattern pl, DecisionEntery de)
     {
-        Debug.Log("steal triggered");
+        Debug.Log("steal triggered by " + pl.playerStats.playerName);
         return waitDelay;
     }
 
-    public float UserSteal(ref Player pl)
+    public float UserSteal(PlayerStatePattern pl, DecisionEntery de)
     {
         return waitDelay;
     }

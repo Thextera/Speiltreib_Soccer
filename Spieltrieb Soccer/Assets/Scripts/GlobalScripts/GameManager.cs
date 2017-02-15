@@ -79,19 +79,19 @@ public class GameManager : MonoBehaviour {
         //debug create player :D
 
         testInitList = new PlayerInit[13];
-        DebugCreatePlayer("Defence", "Right", 0, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(10, 10)),false,"R1");
-        DebugCreatePlayer("Defence", "Right", 1, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(10, 20)),false,"R2");
-        DebugCreatePlayer("Defence", "Right", 2, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(10, 30)),false,"R3");
-        DebugCreatePlayer("Forward", "Right", 3, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(10, 40)),false,"R4");
-        DebugCreatePlayer("Forward", "Right", 4, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(10, 50)),false,"R5");
-        DebugCreatePlayer("Forward", "Right", 5, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(10, 60)),false,"R6");
+        DebugCreatePlayer("Defence", "Right", 0, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 10)),false,"R1");
+        DebugCreatePlayer("Defence", "Right", 1, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 20)),false,"R2");
+        DebugCreatePlayer("Defence", "Right", 2, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 30)),false,"R3");
+        DebugCreatePlayer("Forward", "Right", 3, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 40)),false,"R4");
+        DebugCreatePlayer("Forward", "Right", 4, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 50)),false,"R5");
+        DebugCreatePlayer("Forward", "Right", 5, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 60)),false,"R6");
                                                                                                                           
-        DebugCreatePlayer("Defence", "Left", 6,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(90, 10)), true,"L1");
-        DebugCreatePlayer("Defence", "Left", 7,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(90, 30)), true,"L2");
-        DebugCreatePlayer("Defence", "Left", 8,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(90, 50)), true,"L3");
-        DebugCreatePlayer("Forward", "Left", 9,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(90, 70)), true,"L4");
-        DebugCreatePlayer("Forward", "Left", 10, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(90, 90)), true,"L5");
-        DebugCreatePlayer("Forward", "Left", 11, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(80, 50)), true,"L6");
+        DebugCreatePlayer("Defence", "Left", 6,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 10)), true,"L1");
+        DebugCreatePlayer("Defence", "Left", 7,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 30)), true,"L2");
+        DebugCreatePlayer("Forward", "Left", 8,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(20, 50)), true,"L3");
+        DebugCreatePlayer("Defence", "Left", 9,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 70)), true,"L4");
+        DebugCreatePlayer("Forward", "Left", 10, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 90)), true,"L5");
+        DebugCreatePlayer("Forward", "Left", 11, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(60, 50)), true,"L6");
         BeginGame(testInitList);
     }
 

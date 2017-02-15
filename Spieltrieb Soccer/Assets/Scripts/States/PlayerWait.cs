@@ -67,4 +67,9 @@ public class PlayerWait : IPlayerState {
     {
         waitDelay = wd;
     }
+
+    public string ReturnNameString()
+    {
+        return "Wait";
+    }
 }

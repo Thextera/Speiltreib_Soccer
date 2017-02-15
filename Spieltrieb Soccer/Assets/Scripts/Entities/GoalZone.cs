@@ -46,8 +46,8 @@ public class GoalZone : MonoBehaviour {
         }
 
         //convert goal locations to gridspace for easy access later.
-        goalPostOneField = Field.Instance.ConvertGlobalToField(goalPostOne);
-        goalPostTwoField = Field.Instance.ConvertGlobalToField(goalPostTwo);
+        //goalPostOneField = Field.Instance.ConvertGlobalToField(goalPostOne);
+        //goalPostTwoField = Field.Instance.ConvertGlobalToField(goalPostTwo);
     }
 
     //wait untill something bumps the goal zone.

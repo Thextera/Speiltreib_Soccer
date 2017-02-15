@@ -18,7 +18,7 @@ public class BallKick : MonoBehaviour {
     Rigidbody2D rb;
 
     //adds force to the ball as if it was kicked.
-    void KickBall(Vector2 force)
+    public void KickBall(Vector2 force)
     {
         //tell the ball that it is loose and no one has possession of it.
         ball.UnpossessBall();

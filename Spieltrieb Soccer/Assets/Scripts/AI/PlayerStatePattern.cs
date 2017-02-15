@@ -9,6 +9,7 @@ public class PlayerStatePattern : MonoBehaviour {
     public bool possessesBall;
     public float possessionRange;
     public Player playerStats;
+    public string state;
 
     public IPlayerState currentState;
     [HideInInspector] public PlayerWait sPlayerWait;
@@ -18,6 +19,7 @@ public class PlayerStatePattern : MonoBehaviour {
     [HideInInspector] public PlayerActionDecision sPlayerActionDecision;
     [HideInInspector] public PlayerMovementDecision sPlayerMovementDecision;
     [HideInInspector] public PlayerMovingToPosition sPlayerMovingToPosition;
+
 
     private void Awake()
     {
@@ -60,6 +62,7 @@ public class PlayerStatePattern : MonoBehaviour {
     void Update()
     {
         //print(currentState + " + " + gameObject);
+        state = currentState.ReturnNameString();
         currentState.UpdateState();
     }
 
@@ -84,7 +87,7 @@ public class PlayerStatePattern : MonoBehaviour {
 
     private void AtDestination()
     {
-        print("I'm here");
+        //print("I'm here");
         if(currentState == sPlayerMovingToPosition)
         {
             currentState = sPlayerActionDecision;

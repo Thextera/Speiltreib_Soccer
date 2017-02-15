@@ -6,13 +6,13 @@ public class Shoot {
 
     float waitDelay = 0;
 
-    public float AIShoot(ref Player pl)
+    public float AIShoot(PlayerStatePattern pl, DecisionEntery de)
     {
         Debug.Log("shoot triggered");
         return waitDelay;
     }
 
-    public float UserShoot(ref Player pl)
+    public float UserShoot(PlayerStatePattern pl, DecisionEntery de)
     {
         return waitDelay;
     }

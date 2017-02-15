@@ -11,8 +11,8 @@ public class PlayerActionDecision : IPlayerState
     public Player[] team;
     public Player[] foe;
 
-    private LayerMask FieldMask;
-    //private LayerMask PlayerMask;
+    private LayerMask fieldMask;
+    private LayerMask playerMask;
     //private LayerMask BallMask;
 
     private Attack attack;
@@ -54,8 +54,8 @@ public class PlayerActionDecision : IPlayerState
         clear = new Clear();
         shoot = new Shoot();
 
-        FieldMask = Field.Instance.gameObject.layer;
-        //PlayerMask = player.gameObject.layer;
+        fieldMask = Field.Instance.gameObject.layer;
+        playerMask = player.gameObject.layer;
         //BallMask = player.ballReference.gameObject.layer;
 
         options = new DecisionEntery[10];
@@ -109,10 +109,24 @@ public class PlayerActionDecision : IPlayerState
             //iterate through all forward options
             foreach(DecisionEntery de in forwardOptions)
             {
-                //select the highest weighted option 
-                if(chosenOption == null || chosenOption.weight < de.weight)
+                if (de != null)
                 {
-                    chosenOption = de;
+                    //select the highest weighted option 
+                    if (chosenOption == null || chosenOption.weight < de.weight)
+                    {
+                        chosenOption = de;
+                    }
+                    else if (chosenOption != null && chosenOption.weight == de.weight)//tiebreaker
+                    {
+                        //do a 50/50 to see which option to choose.
+                        //TODO be more deliberate with this. 50/50 isnt acceptable.
+                        int rand = Random.Range(0, 1);
+                        if (rand == 1)
+                        {
+                            Debug.Log("TIE WAS BROKEN");
+                            chosenOption = de;
+                        }
+                    }
                 }
             }
         }
@@ -128,6 +142,17 @@ public class PlayerActionDecision : IPlayerState
                     {
                         chosenOption = de;
                     }
+                    else if (chosenOption != null && chosenOption.weight == de.weight)//tiebreaker
+                    {
+                        //do a 50/50 to see which option to choose.
+                        //TODO be more deliberate with this. 50/50 isnt acceptable.
+                        int rand = Random.Range(0, 1);
+                        if (rand == 1)
+                        {
+                            chosenOption = de;
+                            Debug.Log("TIE WAS BROKEN");
+                        }
+                    }
                 }
             }
         }
@@ -139,35 +164,35 @@ public class PlayerActionDecision : IPlayerState
             //I WOULDVE RATHERED USE A SWITCH STATEMENT BUT I GUESS C# DOESNT LIKE USING THOSE WITH DICTIONARIES >.> #sass
             if (chosenOption.name == GameManager.Instance.AIActions["Attack"])
             {
-                waitDelay = attack.AIAttack(ref player.playerStats);
+                waitDelay = attack.AIAttack(player, chosenOption);
             }
             else if (chosenOption.name == GameManager.Instance.AIActions["Pass"])
             {
-                waitDelay = Pass.AIPass(ref player.playerStats);
+                waitDelay = Pass.AIPass(player, chosenOption);
             }
             else if (chosenOption.name == GameManager.Instance.AIActions["Shoot"])
             {
-                waitDelay = shoot.AIShoot(ref player.playerStats);
+                waitDelay = shoot.AIShoot(player, chosenOption);
             }
             else if (chosenOption.name == GameManager.Instance.AIActions["Dribble"])
             {
-                waitDelay = dribble.AIDribble(ref player.playerStats);
+                waitDelay = dribble.AIDribble(player, chosenOption);
             }
             else if (chosenOption.name == GameManager.Instance.AIActions["Cross"])
             {
-                waitDelay = cross.AICross(ref player.playerStats);
+                waitDelay = cross.AICross(player, chosenOption);
             }
             else if (chosenOption.name == GameManager.Instance.AIActions["Clear"])
             {
-                waitDelay = clear.AIClear(ref player.playerStats);
+                waitDelay = clear.AIClear(player, chosenOption);
             }
             else if (chosenOption.name == GameManager.Instance.AIActions["Steal"])
             {
-                waitDelay = steal.AISteal(ref player.playerStats);
+                waitDelay = steal.AISteal(player, chosenOption);
             }
             else if (chosenOption.name == GameManager.Instance.AIActions["NotOpen"])
             {
-
+                Debug.Log(player.playerStats.playerName + " has decided he is open");
             }
             else if (chosenOption.name == GameManager.Instance.AIActions["Dive"])
             {
@@ -208,6 +233,11 @@ public class PlayerActionDecision : IPlayerState
     public void ToPlayerRunAndDribble()
     {
 
+    }
+
+    public string ReturnNameString()
+    {
+        return "ActionDesicion";
     }
 
     public void ToPlayerWait(float wd)
@@ -306,17 +336,26 @@ public class PlayerActionDecision : IPlayerState
         //based on distance from teammates. (favor mid passes)
         foreach (Player p in team)
         {
-            if (p != null)
+            //Ignore nulls in the array and me. because I dont want to pass to me.
+            if (p != null && p.gameObject.GetInstanceID() != player.gameObject.GetInstanceID())
             {
-                //find the distance between me and the target.(med range)
+                //find the distance between me and the pass target.(med range)
                 f = Mathf.Abs(Vector2.Distance(player.transform.position, p.transform.position));
 
-                //if the current number is closer to 1 than the previous AND the player has a line of sight to the target then save the pair.
-                if ((n == 0 || f - player.playerStats.targetMidRange < n - player.playerStats.targetMidRange) && !Physics.Linecast(player.transform.position, p.transform.position, FieldMask))
+                
+                Debug.DrawLine(player.transform.position, p.transform.position, Color.red, 0.75f);
+
+                //TODO something is wrong with my use of variables here... figure it out later.
+                //if the current number is closer to 1 than the previous 
+                if ((n == 0 || f - player.playerStats.targetMidRange < n - player.playerStats.targetMidRange))
                 {
-                    //TODO this favors the closest player...
-                    n = f;
-                    pl = p;
+                    //Check line of sight. 
+                    if(!CheckLine(player.transform.position, p.transform.position, p.gameObject, playerMask))
+                    { 
+                        //TODO this favors the closest player...
+                        n = f;
+                        pl = p;
+                    }
                 }
             }
         }
@@ -339,27 +378,38 @@ public class PlayerActionDecision : IPlayerState
         //based on distance from net (favor mid)
         foreach(GoalZone gz in Field.Instance.gz)
         {
-            if(player.playerStats.team == gz.team)
+            if(player.playerStats.team != gz.team)
             {
+
                 //create a position representing the center of the net.
-                v = new Vector2(gz.goalPostOne.x, gz.goalPostOne.y + Mathf.Abs(2/gz.goalPostOne.y - gz.goalPostTwo.y));
+                v = new Vector2(gz.goalPostOne.x, gz.goalPostTwo.y + Vector2.Distance(gz.goalPostOne, gz.goalPostTwo)/2);
+                //calc distanc between me and the center of the net.
                 n = Vector2.Distance(player.transform.position, v);
+                //create desicion base weighting from that weight.
                 i = CreateWeightingFromDistance(player.playerStats.targetMidRange, n, i);
 
                 //based on raycasts to net. (checks center of net and both posts.)
                 //if ray is obstructed reduce weighting by an ammount.
-                if(!Physics.Linecast(player.transform.position, gz.goalPostOne, FieldMask))
+                Debug.DrawLine(player.transform.position, gz.goalPostOne, Color.cyan, 0.75f);
+                Debug.DrawLine(player.transform.position, gz.goalPostTwo, Color.magenta, 0.75f);
+                Debug.DrawLine(player.transform.position, v, Color.yellow, 0.75f);
+
+
+                if(CheckLine(player.transform.position, gz.goalPostOne, playerMask))
                 {
+                    //lower shot weight if a hit was detected.
                     i -= 10;
                 }
 
-                if (!Physics.Linecast(player.transform.position, gz.goalPostTwo, FieldMask))
+                if (CheckLine(player.transform.position, gz.goalPostTwo, playerMask))
                 {
+                    //lower shot weight if a hit was detected.
                     i -= 10;
                 }
 
-                if (!Physics.Linecast(player.transform.position, v, FieldMask))
+                if (CheckLine(player.transform.position, v, playerMask))
                 {
+                    //lower shot weight if a hit was detected.
                     i -= 10;
                 }
             }
@@ -428,32 +478,18 @@ public class PlayerActionDecision : IPlayerState
         DecisionEntery de = new DecisionEntery(GameManager.Instance.AIActions["Steal"]);
         i = 0;
         n = 0;
+
         //based on distance from enemies
         foreach (Player p in foe)
         {
-            if (p != null)
+            if (p != null && p.psp.possessesBall)
             {
-                //find the distance between me and the target.(med range)
-                f = Mathf.Abs(Vector2.Distance(player.transform.position, p.transform.position));
-
-                //if the current number is closer to 1 than the previous then save the pair. MUST ALSO HAVE THE BALL.
-                if ((n == 0 || f - player.playerStats.targetShortRange < n - player.playerStats.targetShortRange) && p.psp.possessesBall)
-                {
-                    //TODO this favors the closest player...
-                    n = f;
-                    pl = p;
-                }
+                //find the distance between me and the target.
+                n = Mathf.Abs(Vector2.Distance(player.transform.position, p.transform.position));
             }
         }
 
-        if (n != 0)
-        {
-            i = CreateWeightingFromDistance(player.playerStats.targetShortRange, n, i);
-        }
-        else
-        {
-            i = 0;
-        }
+        i = CreateWeightingFromDistance(player.playerStats.targetShortRange, n, i);
 
         de.decisionPosition = GameManager.Instance.positions["Defence"];
         de.weight = i;
@@ -504,13 +540,15 @@ public class PlayerActionDecision : IPlayerState
         DecisionEntery de = new DecisionEntery(GameManager.Instance.AIActions["NotOpen"]);
         i = 0;
         //based on raycast to ball
-        if (!Physics.Linecast(player.transform.position, player.ballReference.transform.position, FieldMask))
+        if (CheckLine(player.transform.position, player.ballReference.transform.position, playerMask))
         {
-            i = 0;//player is open, no actions need to be taken
+            //triggered when player is no longer open.
+            i = 0;
         }
         else
         {
-            i = 100;//player is not open. player must move to a new position.
+            //weighting needs to be balanced against steals weight. Lots of tweaks may need to be made here in teh future.
+            i = 60;//triggered when player is open. 
         }
 
         de.weight = i;
@@ -525,6 +563,10 @@ public class PlayerActionDecision : IPlayerState
         float fDist;
         fDist = dist / range;
         //based upon the distance from the player set the weighting of this desicion.
+        if(fDist <= 0)
+        {
+            weight = 0;
+        }
         if (fDist < 0.5f)
         {
             weight = 25;
@@ -687,5 +729,45 @@ public class PlayerActionDecision : IPlayerState
         defenceOptions = new DecisionEntery[options.Length];
         forwardOptions = new DecisionEntery[options.Length];
     }
+
+
+    private bool CheckLine(Vector2 positionOne, Vector2 positionTwo, LayerMask lm)
+    {
+        //create a linecast.
+        //TODO remove hitarray. its a debug line.
+        RaycastHit2D[] hitarray = Physics2D.LinecastAll(positionOne, positionTwo);
+        foreach (RaycastHit2D hit in Physics2D.LinecastAll(positionOne, positionTwo))
+                {
+                    //check everything hit by the ray. Ignoring me
+                    if(hit.collider.gameObject.GetInstanceID() != player.gameObject.GetInstanceID() && hit.collider.gameObject.layer == lm.value)
+                    {
+                    //If it is a player and isnt me then count it as a hit.
+                    return true;
+                    }
+                }
+
+        return false;
+    }
+
+    private bool CheckLine(Vector2 positionOne, Vector2 positionTwo, GameObject toIgnore, LayerMask lm)
+    {
+
+        //create a linecast.
+        //TODO remove hitarray. its a debug line.
+        RaycastHit2D[] hitarray = Physics2D.LinecastAll(positionOne, positionTwo);
+        foreach (RaycastHit2D hit in Physics2D.LinecastAll(positionOne, positionTwo))
+        {
+            //check everything hit by the ray. Ignoreing me and the object to ignore.
+            if (hit.collider.gameObject.GetInstanceID() != player.gameObject.GetInstanceID() && hit.collider.gameObject.GetInstanceID() != toIgnore.GetInstanceID() && hit.collider.gameObject.layer == lm.value)
+            {
+                //If it is a player and isnt me then count it as a hit.
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
 
 }

@@ -6,13 +6,13 @@ public class Pass{
 
     float waitDelay = 0;
 
-    public float AIPass(ref Player pl)
+    public float AIPass(PlayerStatePattern pl, DecisionEntery de)
     {
         Debug.Log("pass triggered");
         return waitDelay;
     }
 
-    public float UserPass(ref Player pl)
+    public float UserPass(PlayerStatePattern pl, DecisionEntery de)
     {
         return waitDelay;
     }

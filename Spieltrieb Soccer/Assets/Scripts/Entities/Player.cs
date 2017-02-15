@@ -21,6 +21,8 @@ public class Player : MonoBehaviour {
     public int position;
     public int team;
 
+    public float attackStrengthMultiplier;
+
     public bool AI;
 
     public float engageDistance = 5;
@@ -54,6 +56,9 @@ public class Player : MonoBehaviour {
         position = initPosition;
         playerName = initPlayerName;
         AI = initAI;
+
+        //name the game object the same name as ME! this makes troublshooting easier.
+        this.gameObject.name = initPlayerName;
         
 
         //find our movement class.

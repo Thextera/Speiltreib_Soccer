@@ -49,4 +49,9 @@ public class PlayerDead : IPlayerState {
     {
 
     }
+
+    public string ReturnNameString()
+    {
+        return "Dead";
+    }
 }
