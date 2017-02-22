@@ -10,6 +10,8 @@ public class PlayerMove : MonoBehaviour{
     public float movementAcceleration = 0.5f; // how quickly  player reaches their maximum speed.
     public float minVelocity = 0.2f;//the minimum velocity the player can travel before they have to stop.
     public float targetRadius = 1; //if we are this close to our target we have arrived.
+
+    public bool movingToDestination;
     private Rigidbody2D rb;
 
     Field field;
@@ -20,34 +22,35 @@ public class PlayerMove : MonoBehaviour{
     Vector2 destinationVector;
 
 
-    public int gridy = -1;
-    public int gridx = -1;
-    public int gridyb = -1;
-    public int gridxb = -1;
+    //public int gridy = -1;
+    //public int gridx = -1;
+    //public int gridyb = -1;
+    //public int gridxb = -1;
 
     //temporary. remove when done testing.
-    void Update()
-    {
-        //print("Velocity= " + rb.velocity);
-        if(gridy != -1 && gridx != -1)
-        {
-            MoveTo(new Vector2(gridx, gridy));
-            gridx = -1;
-            gridy = -1;
-        }
-        if (gridyb != -1 && gridxb != -1)
-        {
-            stopMove();
-            MoveTo(new Vector2(gridxb, gridyb));
-            gridxb = -1;
-            gridyb = -1;
-        }
-    }
+    //void Update()
+    //{
+        ////print("Velocity= " + rb.velocity);
+        //if(gridy != -1 && gridx != -1)
+        //{
+        //    MoveTo(new Vector2(gridx, gridy));
+        //    gridx = -1;
+        //    gridy = -1;
+        //}
+        //if (gridyb != -1 && gridxb != -1)
+        //{
+        //    stopMove();
+        //    MoveTo(new Vector2(gridxb, gridyb));
+        //    gridxb = -1;
+        //    gridyb = -1;
+        //}
+    //}
 
     void Start()
     {
         field = FindObjectOfType<Field>();
         rb = gameObject.GetComponent<Rigidbody2D>();
+        movingToDestination = false;
     }
     /// <summary>
     /// Method to be called when the player needs to immediately stop moving.
@@ -57,6 +60,7 @@ public class PlayerMove : MonoBehaviour{
         //tell the AI it is at its destination so it breaks from its movement coroutine.
         StopAllCoroutines();
         atDestination = true;
+        movingToDestination = false;
         gameObject.SendMessage("AtDestination");
     }
 
@@ -73,6 +77,7 @@ public class PlayerMove : MonoBehaviour{
         //begin the moving proccess.
         //print("starting routine.");
         StartCoroutine(Move(destination));
+        //print(gameObject.name + " started movement routine");
     }
 
 
@@ -80,8 +85,10 @@ public class PlayerMove : MonoBehaviour{
     //coroutine that handles mnipulating velocities outside of an update function.  
     IEnumerator Move(Vector2 destination)
     {
+        //int moveTime = 0;
+        movingToDestination = true;
         atDestination = false;
-        //if the player is NOT at their destination move towards it.
+        //while the player is NOT at their destination move towards it.
         while(!atDestination)
         {
             //TODO INVESTIGATE POSITIVE/NEGATIVE COORDINATE ISSUES...
@@ -92,6 +99,8 @@ public class PlayerMove : MonoBehaviour{
                 //steering = desired_velocity - velocity
                 destinationVector = new Vector2(destination.x - transform.position.x, destination.y - transform.position.y);
                 rb.velocity = destinationVector.normalized * velocity;
+                //print(gameObject.name + "'s MoveTime: " + moveTime);
+                //moveTime++;
                 
             }
             else
@@ -126,6 +135,7 @@ public class PlayerMove : MonoBehaviour{
                 gameObject.SendMessage("AtDestination");
             }
         }
+        movingToDestination = false;
     }
 
 }

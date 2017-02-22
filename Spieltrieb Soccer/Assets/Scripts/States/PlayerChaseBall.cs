@@ -25,7 +25,7 @@ public class PlayerChaseBall : IPlayerState {
         if(player.ballReference.IsPossessed())
         {
             //if i have the ball decide what to do with it
-            if(player.possessesBall)
+            if(player.isPossessing())
             {
                 ToActionDesicion();
             }
@@ -54,7 +54,7 @@ public class PlayerChaseBall : IPlayerState {
         //if the distance from the ball is small enough then possess the ball.
         if (Mathf.Abs(distanceFromBallX) < player.possessionRange && Mathf.Abs(distanceFromBallY) < player.possessionRange && !player.ballReference.IsPossessed())
         {
-            player.possessesBall = true;
+            player.possessBall();
             player.ballReference.PossessBall(player.gameObject);
         }
     }
@@ -98,7 +98,7 @@ public class PlayerChaseBall : IPlayerState {
     public void ToMovementDesicion()
     {
         player.currentState = player.sPlayerMovementDecision;
-        Debug.Log("Left Chase State");
+        Debug.Log(player.playerStats.playerName + " Left Chase State");
     }
 
     public void ToActionDesicion()

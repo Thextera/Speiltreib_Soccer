@@ -40,6 +40,13 @@ public class GameManager : MonoBehaviour {
     public Dictionary<string, int> teams;
     public Dictionary<string, int> AIActions;
 
+    [Header("GameRules")]
+    public int maxPlayersChasingBall = 2; //maximum number of players allowed to be in chasing state per team.
+    public float stealStatThreshold = 1.5f; //the % of stats a defender must have to have a chance to avoid a steal. Default is 1.0f.
+    public float stealStatLeanience = 0.1f; //the ammount of leaway the steal desicion is given for a "tie" (If the calculated value is within the the above threshold +- this number the desicion is counted as a draw. ) 
+    public float gameSpeed = 1;
+    public float playerInputWait = 2.5f; //how long will the game wait for players to input.
+
     PlayerInit[] testInitList;
 
     void Awake()
@@ -79,19 +86,19 @@ public class GameManager : MonoBehaviour {
         //debug create player :D
 
         testInitList = new PlayerInit[13];
-        DebugCreatePlayer("Defence", "Right", 0, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 10)),false,"R1");
-        DebugCreatePlayer("Defence", "Right", 1, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 20)),false,"R2");
+        //DebugCreatePlayer("Defence", "Right", 0, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 10)),false,"R1");
+        //DebugCreatePlayer("Defence", "Right", 1, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 20)),false,"R2");
         DebugCreatePlayer("Defence", "Right", 2, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 30)),false,"R3");
         DebugCreatePlayer("Forward", "Right", 3, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 40)),false,"R4");
-        DebugCreatePlayer("Forward", "Right", 4, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 50)),false,"R5");
-        DebugCreatePlayer("Forward", "Right", 5, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 60)),false,"R6");
+        //DebugCreatePlayer("Forward", "Right", 4, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 50)),false,"R5");
+        //DebugCreatePlayer("Forward", "Right", 5, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 60)),false,"R6");
                                                                                                                           
-        DebugCreatePlayer("Defence", "Left", 6,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 10)), true,"L1");
-        DebugCreatePlayer("Defence", "Left", 7,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 30)), true,"L2");
-        DebugCreatePlayer("Forward", "Left", 8,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(20, 50)), true,"L3");
+        //DebugCreatePlayer("Defence", "Left", 6,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 10)), true,"L1");
+        //DebugCreatePlayer("Defence", "Left", 7,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 30)), true,"L2");
+        //DebugCreatePlayer("Forward", "Left", 8,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(20, 50)), true,"L3");
         DebugCreatePlayer("Defence", "Left", 9,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 70)), true,"L4");
         DebugCreatePlayer("Forward", "Left", 10, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 90)), true,"L5");
-        DebugCreatePlayer("Forward", "Left", 11, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(60, 50)), true,"L6");
+        //DebugCreatePlayer("Forward", "Left", 11, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(60, 50)), true,"L6");
         BeginGame(testInitList);
     }
 
@@ -129,7 +136,9 @@ public class GameManager : MonoBehaviour {
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space) == true)
+        Time.timeScale = gameSpeed;
+
+        if (Input.GetKeyDown(KeyCode.Space) == true)
         {
             EventManager.Instance.FirstWhistleBlow();
         }

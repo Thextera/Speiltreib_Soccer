@@ -14,12 +14,17 @@ public class Ball : MonoBehaviour {
     public float energyLostOnCollision;
     public float angVelLostOnCollision;
 
+    private LayerMask defaultMask;
+    public LayerMask possessedMask;
+
     [Header("Vel Stop Thresholds")]
     public float velXStop = 0.1f;
     public float velYStop = 0.1f;
     public float VelAngStop = 1;
     public float rotationalThreshold = 25;
 
+    private Vector2 ParentDestination;
+    private Rigidbody2D parentBody;
     private bool possesed; //is a player possessing the ball?
     Rigidbody2D rb;
 
@@ -27,6 +32,7 @@ public class Ball : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
+        defaultMask = gameObject.layer;
 	}
 	
 	// Update is called once per frame
@@ -105,6 +111,29 @@ public class Ball : MonoBehaviour {
             
             #endregion
         }
+        else//ball is possessed...
+        {
+            //just checking if my parent is null...
+            if(gameObject.transform.parent != null)
+            {
+                if (parentBody == null || gameObject.transform.parent.gameObject.GetInstanceID() != parentBody.gameObject.GetInstanceID())
+                {
+                    //move ball in front of player at all times. 
+                    parentBody = transform.parent.gameObject.GetComponent<Rigidbody2D>();
+                }
+
+                //now we have the rigid body of our parent!
+                if(parentBody != null)
+                {
+
+                    transform.position = Vector2.Lerp(transform.position,parentBody.gameObject.transform.TransformPoint(new Vector3 (0,1,0)),0.2f);
+                }
+                else
+                {
+                    Debug.LogWarning("somehow i got parented to something without a rigid body... what on earth?");
+                }
+            }
+        }
     }
 
     //when a ball hits an object, it makes a sound and generates heat. this means lost energy, 
@@ -119,6 +148,8 @@ public class Ball : MonoBehaviour {
     {
         possesed = true;
         rb.isKinematic = true;
+        gameObject.layer = 10;
+        print("possessed " + possessedMask.value);
         transform.parent = possessingUnit.transform;
         EventManager.Instance.BallPossessed();
     }
@@ -128,10 +159,17 @@ public class Ball : MonoBehaviour {
         possesed = false;
         rb.isKinematic = false;
         transform.parent = null;
+        Invoke("ChangeLayersOnUnpossession", 0.2f);
+        print("Unpossessed " + defaultMask.value);
     }
 
     public bool IsPossessed()
     {
         return possesed;
+    }
+
+    private void ChangeLayersOnUnpossession()
+    {
+        gameObject.layer = 9;
     }
 }

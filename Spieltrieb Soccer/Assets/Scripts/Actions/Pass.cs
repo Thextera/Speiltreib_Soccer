@@ -8,6 +8,17 @@ public class Pass{
 
     public float AIPass(PlayerStatePattern pl, DecisionEntery de)
     {
+        Vector2 kickDirection;
+
+        kickDirection = (de.target.transform.position - pl.transform.position);
+        kickDirection.Normalize();
+
+        kickDirection = new Vector2(kickDirection.x * pl.playerStats.pass * pl.playerStats.attackStrengthMultiplier, kickDirection.y * pl.playerStats.pass * pl.playerStats.attackStrengthMultiplier);
+
+        GameManager.Instance.GetComponent<BallKick>().KickBall(kickDirection);
+        de.target.SendMessage("IncomingPass");
+        pl.dePossessBall();
+
         Debug.Log("pass triggered");
         return waitDelay;
     }

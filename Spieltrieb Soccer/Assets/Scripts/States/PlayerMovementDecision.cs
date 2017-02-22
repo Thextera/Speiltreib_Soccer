@@ -54,7 +54,7 @@ public class PlayerMovementDecision : IPlayerState {
             if(p != null && p.GetInstanceID() != player.GetInstanceID() && p.psp.currentState != p.psp.sPlayerDead)
             {
                 //does this player have the ball?
-                if (p.psp.possessesBall)
+                if (p.psp.isPossessing())
                 {
                     ballOwner = p;
                 }
@@ -77,17 +77,18 @@ public class PlayerMovementDecision : IPlayerState {
         //if a teammate has teh ball 
         if(ballOwner != null && ballOwner.team == player.playerStats.team)
         {
+            Debug.Log("team ball check");
             //move to a better position***************************************************
             GoToPosition(CalculatePosition(teamPlayers, enemyPlayers, true));
         }
         //if enemy has ball
         else if (ballOwner != null && ballOwner.team != player.playerStats.team)
         {
+            Debug.Log("foe ball check");
             //check where it is
-            distanceX = player.ballReference.transform.position.x - player.transform.position.x;
-            distanceY = player.ballReference.transform.position.y - player.transform.position.y;
+            distance = Vector2.Distance(player.ballReference.transform.position, player.transform.position);
 
-            if (distanceX < player.playerStats.engageDistance && distanceY < player.playerStats.engageDistance)
+            if (distance < player.playerStats.engageDistance)
             {
                 //if its close, move in to engage.(go to player moving to position state headed toward enemy player. that state should begin the engage desicion.)
                 player.movement.stopMove();
@@ -109,53 +110,81 @@ public class PlayerMovementDecision : IPlayerState {
         //if noone has the ball (It must be a loose ball.)
         else
         {
-            //grab distance between me and the ball
+            //    Debug.Log("Loose Ball Desicion");
+            //    //grab distance between me and the ball
+            //    distance = Vector2.Distance(player.ballReference.transform.position, player.transform.position);
+            //
+            //    //if i am close then check for other players chasing / closer.
+            //    if (distance < player.playerStats.ballEngageDistance)
+            //    {
+            //        // check who is close to the ball and if anyone is already chasing
+            //        foreach (Player p in teamPlayers)
+            //        {
+            //            if (p != null)
+            //            {
+            //                distance = 0;
+            //                //distance between the ball and the other player.
+            //                distance = Vector2.Distance(player.ballReference.transform.position, p.transform.position);
+            //
+            //                if (distance < p.ballEngageDistance || p.psp.currentState == p.psp.sPlayerChaseBall)
+            //                {
+            //                    //add all players that are chasing the ball or very close to it here.
+            //                    suitableplayercount++;
+            //                }
+            //            }
+            //        }
+            //        //TODO change this rule. it is currently defaulted to forcing 2 AIs to chase however setting it to the below would work more dynamically.
+            //        //3 or less attackers, 2 people chase. 4 or more attackers, 3 people chase.
+            //        if (suitableplayercount < 2)
+            //        {
+            //            Debug.Log(player.playerStats.playerName + " decided to chase the ball.");
+            //            suitableplayercount = 0;
+            //            ToPlayerChaseBall();
+            //        }
+            //        else
+            //        {
+            //        //TODO properly set the bool in this statement.
+            //            suitableplayercount = 0;
+            //            GoToPosition(CalculatePosition(teamPlayers, enemyPlayers, true));
+            //        }
+            //        
+            //    }
+            //    else
+            //    {
+            //        //If i am not close then move to a better position.*************************************
+            //        GoToPosition(CalculatePosition(teamPlayers, enemyPlayers, true));
+            //    
+            //    }
+            //
+            //    distanceX = 0;
+            //    distanceY = 0;
+
+            Debug.Log("loose ball check");
+
             distance = Vector2.Distance(player.ballReference.transform.position, player.transform.position);
+            int closerPlayers = 0;
 
-            //if i am close then check for other players chasing / closer.
-            if (distance < player.playerStats.ballEngageDistance)
+            foreach (Player p in teamPlayers)
             {
-                // check who is close to the ball and if anyone is already chasing
-                foreach (Player p in teamPlayers)
+                if (p != null)
                 {
-                    if (p != null)
+                    if (Vector2.Distance(p.transform.position, player.ballReference.transform.position) < distance)
                     {
-                        distance = 0;
-
-                        distance = Vector2.Distance(player.ballReference.transform.position, p.transform.position);
-
-                        if (distance < p.ballEngageDistance && p.psp.currentState == p.psp.sPlayerChaseBall)
-                        {
-                            //add all players that are chasing the ball or very close to it here.
-                            suitableplayercount++;
-                        }
+                        closerPlayers++;
                     }
                 }
-                //TODO change this rule. it is currently defaulted to forcing 2 AIs to chase however setting it to the below would work more dynamically.
-                //3 or less attackers, 2 people chase. 4 or more attackers, 3 people chase.
-                if (suitableplayercount < 2)
-                {
-                    Debug.Log("Movement decided to chase." + suitableplayercount + teamPlayers);
-                    ToPlayerChaseBall();
-                }
-                else
-                {
-                    //TODO properly set the bool in this statement.
-                    GoToPosition(CalculatePosition(teamPlayers, enemyPlayers, true));
-                }
-                suitableplayercount = 0;
+            }
+
+            if(closerPlayers > GameManager.Instance.maxPlayersChasingBall)
+            {
+                GoToPosition(CalculatePosition(teamPlayers, enemyPlayers, true));
             }
             else
             {
-                //If i am not close then move to a better position.*************************************
-                GoToPosition(CalculatePosition(teamPlayers, enemyPlayers, true));
-
+                ToPlayerChaseBall();
             }
-
-            distanceX = 0;
-            distanceY = 0;
         }
-
+        ballOwner = null;
     }
 
     //when the player gains possession of the ball trigger these actions.

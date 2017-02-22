@@ -6,7 +6,7 @@ public class PlayerStatePattern : MonoBehaviour {
 
     public Ball ballReference;
     public PlayerMove movement;
-    public bool possessesBall;
+    private bool possessesBall;
     public float possessionRange;
     public Player playerStats;
     public string state;
@@ -59,7 +59,7 @@ public class PlayerStatePattern : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //print(currentState + " + " + gameObject);
         state = currentState.ReturnNameString();
@@ -79,9 +79,8 @@ public class PlayerStatePattern : MonoBehaviour {
     {
         if(currentState == sPlayerChaseBall)
         {
-            print(this + ", " + currentState);
+            //possibly set state to action here?
             currentState = sPlayerMovementDecision;
-            print(this + ", " + currentState);
         }
     }
 
@@ -92,6 +91,51 @@ public class PlayerStatePattern : MonoBehaviour {
         {
             currentState = sPlayerActionDecision;
         }
+    }
+
+    public void IncomingPass()
+    {
+        Debug.Log(playerStats.playerName + " is getting passed to!");
+        //if you are being passed to immedeately become open to catch the ball.
+        currentState = sPlayerChaseBall;
+    }
+
+    public void BallStolen(bool success)
+    {
+        //trigger this when being stolen from.
+        //if you are moving stop moving.
+        if (currentState == sPlayerMovingToPosition)
+        {
+            movement.stopMove();
+        }
+        //reset state tree. this will represent a dribble action. Later an animator trigger could be hooked up to this.
+        currentState = sPlayerWait;
+
+        //if the steal is successfull the other AI will strip you of the ball. 
+        if(success)
+        {
+            //additionally you will be forced to wait a short period as a penalty.
+            sPlayerWait.SetCurrentWait(0.33f);
+        }
+        
+    }
+
+    public void possessBall()
+    {
+        possessesBall = true;
+        //print(playerStats.playerName + " gained possession");
+    }
+
+    public void dePossessBall()
+    {
+        possessesBall = false;
+        //print(playerStats.playerName + " lost possession");
+    }
+
+    public bool isPossessing()
+    {
+        //print(playerStats.playerName + "'s possession was checked " + possessesBall);
+        return possessesBall;
     }
 
 

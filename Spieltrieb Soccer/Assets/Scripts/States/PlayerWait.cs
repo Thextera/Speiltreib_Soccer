@@ -19,7 +19,9 @@ public class PlayerWait : IPlayerState {
     {
         //reduce the wait time by how much time has passed since the last frame. this value is effected by timescale as slowdowns exist in this game.
         waitDelay -= Time.deltaTime * Time.timeScale;
+        //TODO use of timescale could mess with durations! test this later.
 
+        //if the delay is less than 0 never break from this. it means some external command will do it for you.
         if(waitDelay <= 0)
         {
             waitDelay = 0;

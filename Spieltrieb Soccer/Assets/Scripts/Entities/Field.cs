@@ -35,8 +35,8 @@ public class Field : MonoBehaviour{
     SpriteRenderer sr;
 
     [Header("Stored Values")]
-    float fieldLength; //real dimention of the field
-    float fieldWidth;
+    public float fieldLength; //real dimention of the field
+    public float fieldWidth;
     Vector2 fieldLocation; //where in the world the field is
     Vector2 fieldOrigin; //world coordinates for the 0.0 of the field grid.
 
@@ -46,11 +46,12 @@ public class Field : MonoBehaviour{
     float singleUnitSizeY;
 
     void Start () {
-        //TODO changing the sprite might have an odd effect on these calculations. may have to find a better way to do them once art comes in.
-        sr = GetComponent<SpriteRenderer>();
+        ////TODO changing the sprite might have an odd effect on these calculations. may have to find a better way to do them once art comes in.
+        //sr = GetComponent<SpriteRenderer>();
+        //
+        //fieldWidth = sr.bounds.size.x;
+        //fieldLength = sr.bounds.size.y;
 
-        fieldWidth = sr.bounds.size.x;
-        fieldLength = sr.bounds.size.y;
         fieldLocation = new Vector2(transform.position.x, transform.position.y);
         fieldOrigin = new Vector2(fieldLocation.x - (fieldWidth/2),fieldLocation.y - (fieldLength/2));
 
@@ -96,5 +97,7 @@ public class Field : MonoBehaviour{
 
         return coordinateOut;
     }
+
+
 	
 }

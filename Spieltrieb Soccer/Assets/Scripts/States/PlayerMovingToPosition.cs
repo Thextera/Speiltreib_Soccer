@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PlayerMovingToPosition : IPlayerState {
 
-    private Vector2 destination;
-    private float distance;
-    private float minDistance = 2;
+    //private Vector2 destination;
+    //private float distance;
+    //private float minDistance = 2;
 
     //what player owns this instance of the state?
     private readonly PlayerStatePattern player;
@@ -20,6 +20,10 @@ public class PlayerMovingToPosition : IPlayerState {
     //default state actions. frame by fram actions.
     public void UpdateState()
     {
+        if(!player.movement.movingToDestination)
+        {
+            player.currentState = player.sPlayerMovementDecision;
+        }
         //Debug.Log(destination + " + " + Field.Instance.ConvertGlobalToField(player.transform.position));
         ////if somehow this state was entered without informing it of a destination then default to an action desicion.
         //if(destination != null)
@@ -72,7 +76,7 @@ public class PlayerMovingToPosition : IPlayerState {
 
     public void SetPosition(Vector2 pos)
     {
-        destination = pos;
+        //destination = pos;
     }
 
     public string ReturnNameString()
