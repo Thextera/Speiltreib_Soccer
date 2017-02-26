@@ -18,6 +18,10 @@ public class GoalZone : MonoBehaviour {
 
         //grap teh sprite renderer and get the size of the object.
         SpriteRenderer sr = gameObject.GetComponent<SpriteRenderer>();
+        if(!facingRight)
+        {
+            sr.color = Color.red;
+        }
         float sizex = sr.bounds.size.x;
         float sizey = sr.bounds.size.y;
 

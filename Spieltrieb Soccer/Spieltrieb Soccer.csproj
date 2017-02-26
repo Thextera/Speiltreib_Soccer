@@ -107,6 +107,7 @@
     <Compile Include="Assets\Scripts\States\PlayerDead.cs" />
     <Compile Include="Assets\Scripts\States\PlayerMovementDecision.cs" />
     <Compile Include="Assets\Scripts\States\PlayerMovingToPosition.cs" />
+    <Compile Include="Assets\Scripts\States\PlayerReadyInPosition.cs" />
     <Compile Include="Assets\Scripts\States\PlayerRunAndDribble.cs" />
     <Compile Include="Assets\Scripts\States\PlayerWait.cs" />
     <Compile Include="Assets\Scripts\Utility\FieldSizeGizmo.cs" />

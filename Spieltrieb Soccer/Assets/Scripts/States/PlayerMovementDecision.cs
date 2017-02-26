@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -88,7 +89,8 @@ public class PlayerMovementDecision : IPlayerState {
             //check where it is
             distance = Vector2.Distance(player.ballReference.transform.position, player.transform.position);
 
-            if (distance < player.playerStats.engageDistance)
+            //If the player is within my engage dsistance AND im an defender.
+            if (distance < player.playerStats.engageDistance && player.playerStats.position == GameManager.Instance.positions["Defence"])
             {
                 //if its close, move in to engage.(go to player moving to position state headed toward enemy player. that state should begin the engage desicion.)
                 player.movement.stopMove();
@@ -110,54 +112,6 @@ public class PlayerMovementDecision : IPlayerState {
         //if noone has the ball (It must be a loose ball.)
         else
         {
-            //    Debug.Log("Loose Ball Desicion");
-            //    //grab distance between me and the ball
-            //    distance = Vector2.Distance(player.ballReference.transform.position, player.transform.position);
-            //
-            //    //if i am close then check for other players chasing / closer.
-            //    if (distance < player.playerStats.ballEngageDistance)
-            //    {
-            //        // check who is close to the ball and if anyone is already chasing
-            //        foreach (Player p in teamPlayers)
-            //        {
-            //            if (p != null)
-            //            {
-            //                distance = 0;
-            //                //distance between the ball and the other player.
-            //                distance = Vector2.Distance(player.ballReference.transform.position, p.transform.position);
-            //
-            //                if (distance < p.ballEngageDistance || p.psp.currentState == p.psp.sPlayerChaseBall)
-            //                {
-            //                    //add all players that are chasing the ball or very close to it here.
-            //                    suitableplayercount++;
-            //                }
-            //            }
-            //        }
-            //        //TODO change this rule. it is currently defaulted to forcing 2 AIs to chase however setting it to the below would work more dynamically.
-            //        //3 or less attackers, 2 people chase. 4 or more attackers, 3 people chase.
-            //        if (suitableplayercount < 2)
-            //        {
-            //            Debug.Log(player.playerStats.playerName + " decided to chase the ball.");
-            //            suitableplayercount = 0;
-            //            ToPlayerChaseBall();
-            //        }
-            //        else
-            //        {
-            //        //TODO properly set the bool in this statement.
-            //            suitableplayercount = 0;
-            //            GoToPosition(CalculatePosition(teamPlayers, enemyPlayers, true));
-            //        }
-            //        
-            //    }
-            //    else
-            //    {
-            //        //If i am not close then move to a better position.*************************************
-            //        GoToPosition(CalculatePosition(teamPlayers, enemyPlayers, true));
-            //    
-            //    }
-            //
-            //    distanceX = 0;
-            //    distanceY = 0;
 
             Debug.Log("loose ball check");
 
@@ -220,7 +174,7 @@ public class PlayerMovementDecision : IPlayerState {
 
     public void ToPlayerMovingToPosition(Vector2 destination)
     {
-        player.sPlayerMovingToPosition.SetPosition(destination);
+        //player.sPlayerMovingToPosition.SetPosition(destination);
         player.currentState = player.sPlayerMovingToPosition;
     }
 
@@ -238,6 +192,12 @@ public class PlayerMovementDecision : IPlayerState {
     /// <param name="onAttack">is the move an ofenceive move going forward or defenceive retreat?</param>
     private Vector2 CalculatePosition(Player[] team, Player[] foe, bool onAttack)
     {
+        float posX = CalculatePosX(team, foe, onAttack);
+        float posY = CalculatePosY(team, foe);
+
+        return new Vector2(posX, posY);
+        /*
+         
         //x is the distance parallel to the goals, y is the distance perpendicular to the goals.
         XMin = 0;
         XMax = 100;
@@ -364,6 +324,119 @@ public class PlayerMovementDecision : IPlayerState {
         rv.y = Random.Range(YMin, YMax);
 
         return rv;
+        */
+
+        
+
+    }
+
+    private float CalculatePosX(Player[] team, Player[] foe, bool onAttack)
+    {
+        float posX = 0;
+        //must consider the net the players are shooting on.
+        //does not consider clumping much as this would involve a psudo midfeild position... 
+        //If the player wants to let 5 attckers cluster up for an attack so be it.
+
+        //TODO consider extra clump prevention methods such as using a player position averge.
+
+        //consider if ball is on attacking side or defending side. (onAttack bool)
+        if(onAttack)//attack
+        {
+            if (player.playerStats.position == GameManager.Instance.positions["Forward"])
+            {
+                //attacker on attack (random within forward third)
+                posX = UnityEngine.Random.Range(66,99);
+            }
+            else
+            {
+                //defender on attack.(random within middle third)
+                posX = UnityEngine.Random.Range(33, 66);
+            }
+        }
+        else//fall back
+        {
+            if (player.playerStats.position == GameManager.Instance.positions["Forward"])
+            {
+                //attacker on defence. (random within middle third)
+                posX = UnityEngine.Random.Range(33, 66);
+            }
+            else
+            {
+                //defender on defence. (random within rear third)
+                posX = UnityEngine.Random.Range(1, 33);
+            }
+        }
+
+        //check team 
+        if (player.playerStats.team == GameManager.Instance.teams["Left"])
+        {
+            //if team is left invert the value.
+            posX = 100 - posX;
+        }
+
+        return posX;
+    }
+
+    private float CalculatePosY(Player[] team, Player[] foe)
+    {
+        //ignores which net the players are shooting on.
+
+        int plTop = 0; //number of players found to be on the top half of the feild.
+        int plBot = 0; //number of players found to be on the bottom half of the feild.
+        float posY = 0;
+
+        //look at team roster. count players on top and players on bottom.
+        foreach(Player p in team)
+        {
+            //make sure player isnt null and exclude myself.
+            if(p != null && p.gameObject.GetInstanceID() != player.gameObject.GetInstanceID())
+            {
+                //check the location of each player,
+                if(Field.Instance.ConvertGlobalToField(p.gameObject.transform.position).y > 50)
+                {
+                   //if they are above the center line
+                   plTop++;
+                }
+                else
+                {
+                    //if they are below the center line.
+                    plBot++;
+                }
+            }
+        }
+
+        //situations
+        //if even attemtp to random closer to center.
+        if(plTop + plBot == 0)
+        {
+            //center random
+            posY = UnityEngine.Random.Range(25, 75);
+        }
+        else if(plTop > plBot)
+        {
+            //bot random
+            posY = UnityEngine.Random.Range(1, 50);
+        }
+        else if(plTop < plBot)
+        {
+            //top random
+            posY = UnityEngine.Random.Range(50, 99);
+        }
+        else if(plTop == plBot)
+        {
+            //center random
+            posY = UnityEngine.Random.Range(25, 75);
+        }
+        else
+        {
+            //should be unreachable.
+            //default to the same random choice as if its a tie.
+            //center random
+            Debug.LogWarning("Vertical movement went wrong. defaulting to moving to center.");
+            posY = UnityEngine.Random.Range(25, 75);
+        }
+
+        return posY;
     }
 
     /// <summary>
@@ -375,7 +448,7 @@ public class PlayerMovementDecision : IPlayerState {
         player.movement.stopMove();
         player.movement.MoveTo(position);
         player.currentState = player.sPlayerMovingToPosition;
-        player.sPlayerMovingToPosition.SetPosition(position);
+        //player.sPlayerMovingToPosition.SetPosition(position);
     }
 
 }

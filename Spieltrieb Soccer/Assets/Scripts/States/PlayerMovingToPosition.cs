@@ -74,10 +74,10 @@ public class PlayerMovingToPosition : IPlayerState {
 
     }
 
-    public void SetPosition(Vector2 pos)
-    {
+    //public void SetPosition(Vector2 pos)
+    //{
         //destination = pos;
-    }
+    //}
 
     public string ReturnNameString()
     {

@@ -10,6 +10,7 @@ public class Player : MonoBehaviour {
 
     public PlayerMove pm;
     public PlayerStatePattern psp;
+    public SpriteRenderer IDRing;
 
     public float speed;
     public float attack;
@@ -71,6 +72,7 @@ public class Player : MonoBehaviour {
         if (pm != null)
         {
             UpdateSpeed(speed);
+            UpdateUI();
         }
         else
         {
@@ -79,6 +81,7 @@ public class Player : MonoBehaviour {
 
         //move player into specified starting position.
         transform.position = initLocation;
+
 
     }
 
@@ -130,6 +133,32 @@ public class Player : MonoBehaviour {
     public void UpdateDribble(float uDribble)
     {
 
+    }
+
+    public void UpdateUI()
+    {
+        if (team == 0)
+        {
+            if (position == GameManager.Instance.positions["Forward"])
+            {
+                IDRing.color = Color.blue;
+            }
+            else
+            {
+                IDRing.color = Color.cyan;
+            }
+        }
+        else
+        {
+            if (position == GameManager.Instance.positions["Forward"])
+            {
+                IDRing.color = Color.red;
+            }
+            else
+            {
+                IDRing.color = Color.yellow;
+            }
+        }
     }
 
 
