@@ -46,6 +46,7 @@ public class GameManager : MonoBehaviour {
     public float stealStatLeanience = 0.1f; //the ammount of leaway the steal desicion is given for a "tie" (If the calculated value is within the the above threshold +- this number the desicion is counted as a draw. ) 
     public float gameSpeed = 1;
     public float playerInputWait = 2.5f; //how long will the game wait for players to input.
+    public float maxPossessionTime = 1.4f;
 
     PlayerInit[] testInitList;
 

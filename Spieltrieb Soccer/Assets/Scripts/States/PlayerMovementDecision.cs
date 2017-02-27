@@ -48,6 +48,17 @@ public class PlayerMovementDecision : IPlayerState {
         enemyPlayers = new Player[GameManager.Instance.GetPlayers().Length];
         iTeam = 0;
         iFoe = 0;
+
+        //movement check, if the ball is within a certain range of me then stop moving and wait. 
+        float d = Vector2.Distance(player.transform.position, player.ballReference.transform.position);
+        if(d> player.playerStats.targetMidRange && d< player.playerStats.targetLongRange)
+        {
+            player.currentState = player.sPlayerWait;
+            player.sPlayerWait.SetCurrentWait(0.1f);
+            return;
+        }
+
+
         //iterate through the list of players
         foreach(Player p in GameManager.Instance.GetPlayers())
         {
@@ -122,14 +133,14 @@ public class PlayerMovementDecision : IPlayerState {
             {
                 if (p != null)
                 {
-                    if (Vector2.Distance(p.transform.position, player.ballReference.transform.position) < distance)
+                    if (Vector2.Distance(player.ballReference.transform.position, p.transform.position) < distance || p.psp.currentState == p.psp.sPlayerChaseBall)
                     {
                         closerPlayers++;
                     }
                 }
             }
 
-            if(closerPlayers > GameManager.Instance.maxPlayersChasingBall)
+            if(closerPlayers >= GameManager.Instance.maxPlayersChasingBall)
             {
                 GoToPosition(CalculatePosition(teamPlayers, enemyPlayers, true));
             }
@@ -389,7 +400,7 @@ public class PlayerMovementDecision : IPlayerState {
         foreach(Player p in team)
         {
             //make sure player isnt null and exclude myself.
-            if(p != null && p.gameObject.GetInstanceID() != player.gameObject.GetInstanceID())
+            if(p != null && p.gameObject.GetInstanceID() != player.gameObject.GetInstanceID() /* && p.position == player.playerStats.position */)
             {
                 //check the location of each player,
                 if(Field.Instance.ConvertGlobalToField(p.gameObject.transform.position).y > 50)

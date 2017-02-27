@@ -11,6 +11,8 @@ public class PlayerStatePattern : MonoBehaviour {
     public Player playerStats;
     public string state;
 
+    private float possessionTimer;
+
     public IPlayerState currentState;
     [HideInInspector] public PlayerWait sPlayerWait;
     [HideInInspector] public PlayerDead sPlayerDead;
@@ -64,6 +66,26 @@ public class PlayerStatePattern : MonoBehaviour {
         //print(currentState + " + " + gameObject);
         state = currentState.ReturnNameString();
         currentState.UpdateState();
+
+        if(possessesBall)
+        {
+            possessionTimer -= Time.deltaTime;
+        }
+        else
+        {
+            possessionTimer = GameManager.Instance.maxPossessionTime;
+        }
+
+        if(possessionTimer <= 0)
+        {
+            if(currentState == sPlayerMovingToPosition)
+            {
+                movement.stopMove();
+            }
+            currentState = sPlayerActionDecision;
+        }
+
+
     }
 
 

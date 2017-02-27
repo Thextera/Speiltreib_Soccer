@@ -317,10 +317,27 @@ public class PlayerActionDecision : IPlayerState
             if (p != null)
             {
                 //find the distance between me and the target.(med range)
+
+                //TODO review this section.
                 f = Mathf.Abs(Vector2.Distance(player.transform.position, p.transform.position));
+                //impossing a weighting penalty on anyone behind me. avoids shooting away from the net basically.
+                Vector2 net;
+                if (player.playerStats.team == 1)
+                {
+                    net = Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(0, 50));
+                }
+                else
+                {
+                    net = Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(100, 50));
+                }
+                if(Vector3.Distance(p.transform.position,net) > Vector3.Distance(player.transform.position,net))
+                {
+                    f *= 1.33f;
+                }
+
 
                 //if the current number is closer to 1 than the previous AND the player has a line of sight to the target then save the pair.
-                if (n == 0 || f - player.playerStats.targetMidRange < n - player.playerStats.targetMidRange)
+                if (n == 0 || f < n)
                 {
                     //TODO this favors the closest player...
                     n = f;

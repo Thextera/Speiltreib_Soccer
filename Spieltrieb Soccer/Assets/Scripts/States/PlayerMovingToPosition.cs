@@ -11,10 +11,13 @@ public class PlayerMovingToPosition : IPlayerState {
     //what player owns this instance of the state?
     private readonly PlayerStatePattern player;
 
+    private float t;
+
     //construct with a readonly directive telling what AI owns this instance. could be usefull.
     public PlayerMovingToPosition(PlayerStatePattern playerStatePatern)
     {
         player = playerStatePatern;
+        t = 0.5f;
     }
 
     //default state actions. frame by fram actions.
@@ -23,6 +26,16 @@ public class PlayerMovingToPosition : IPlayerState {
         if(!player.movement.movingToDestination)
         {
             player.currentState = player.sPlayerMovementDecision;
+        }
+
+        if( t <= 0)
+        {
+            player.currentState = player.sPlayerMovementDecision;
+            t = 0.5f;
+        }
+        else
+        {
+            t -= Time.deltaTime;
         }
         //Debug.Log(destination + " + " + Field.Instance.ConvertGlobalToField(player.transform.position));
         ////if somehow this state was entered without informing it of a destination then default to an action desicion.
