@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour {
     public float gameSpeed = 1;
     public float playerInputWait = 2.5f; //how long will the game wait for players to input.
     public float maxPossessionTime = 1.4f;
+    public float timeSlowDuration = 0.75f;
 
     PlayerInit[] testInitList;
 
@@ -86,20 +87,20 @@ public class GameManager : MonoBehaviour {
         //TODO remove this.
         //debug create player :D
 
-        testInitList = new PlayerInit[13];
-        DebugCreatePlayer("Defence", "Right", 0, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 10)),false,"R1");
-        DebugCreatePlayer("Defence", "Right", 1, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 20)),false,"R2");
-        DebugCreatePlayer("Defence", "Right", 2, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 30)),false,"R3");
-        DebugCreatePlayer("Forward", "Right", 3, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 40)),false,"R4");
-        DebugCreatePlayer("Forward", "Right", 4, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 50)),false,"R5");
-        DebugCreatePlayer("Forward", "Right", 5, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(30, 60)),false,"R6");
+        testInitList = new PlayerInit[13];                                                                 
+        DebugCreatePlayer("Defence", "Right", 0, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(40, 10)),false,"R1");
+        DebugCreatePlayer("Defence", "Right", 1, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(40, 20)),false,"R2");
+        DebugCreatePlayer("Defence", "Right", 2, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(40, 30)),false,"R3");
+        DebugCreatePlayer("Forward", "Right", 3, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(40, 40)),false,"R4");
+        DebugCreatePlayer("Forward", "Right", 4, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(40, 50)),false,"R5");
+        DebugCreatePlayer("Forward", "Right", 5, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(40, 60)),false,"R6");
                                                                                                                           
-        DebugCreatePlayer("Defence", "Left", 6,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 10)), true,"L1");
-        DebugCreatePlayer("Defence", "Left", 7,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 30)), true,"L2");
-        DebugCreatePlayer("Forward", "Left", 8,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(20, 50)), true,"L3");
-        DebugCreatePlayer("Defence", "Left", 9,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 70)), true,"L4");
-        DebugCreatePlayer("Forward", "Left", 10, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(70, 90)), true,"L5");
-        DebugCreatePlayer("Forward", "Left", 11, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(60, 50)), true,"L6");
+        DebugCreatePlayer("Defence", "Left", 6,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(60, 10)), true,"L1");
+        DebugCreatePlayer("Defence", "Left", 7,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(60, 30)), true,"L2");
+        DebugCreatePlayer("Forward", "Left", 8,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(60, 50)), true,"L3");
+        DebugCreatePlayer("Defence", "Left", 9,  Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(60, 70)), true,"L4");
+        DebugCreatePlayer("Forward", "Left", 10, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(60, 90)), true,"L5");
+        DebugCreatePlayer("Forward", "Left", 11, Field.Instance.ConvertFieldCoordinateToGlobal(new Vector2(60, 40)), true,"L6");
         BeginGame(testInitList);
     }
 
@@ -137,7 +138,7 @@ public class GameManager : MonoBehaviour {
 
     private void Update()
     {
-        Time.timeScale = gameSpeed;
+        //Time.timeScale = gameSpeed;
 
         if (Input.GetKeyDown(KeyCode.Space) == true)
         {

@@ -6,6 +6,7 @@ public class PlayerChaseBall : IPlayerState {
 
     int fcount = 9; //calls the MoveTo command every x frames.
     Vector2 ballLocation;
+    float distanceFromBall;
     float distanceFromBallX;
     float distanceFromBallY;
 
@@ -48,14 +49,18 @@ public class PlayerChaseBall : IPlayerState {
         }
 
         //check the distance from the ball.
-        distanceFromBallX = player.transform.position.x - player.ballReference.transform.position.x;
-        distanceFromBallY = player.transform.position.y - player.ballReference.transform.position.y;
+
+        distanceFromBall = Vector2.Distance(player.transform.position, player.ballReference.transform.position);
 
         //if the distance from the ball is small enough then possess the ball.
-        if (Mathf.Abs(distanceFromBallX) < player.possessionRange && Mathf.Abs(distanceFromBallY) < player.possessionRange && !player.ballReference.IsPossessed())
+        if (distanceFromBall < player.possessionRange  && !player.ballReference.IsPossessed())
         {
             player.possessBall();
             player.ballReference.PossessBall(player.gameObject);
+        }
+        else if(distanceFromBall > player.playerStats.targetMidRange)//if the ball is too far away break back to default movement.
+        {
+            ToMovementDesicion();
         }
     }
 

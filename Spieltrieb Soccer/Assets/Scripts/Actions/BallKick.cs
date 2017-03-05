@@ -13,7 +13,6 @@ public class BallKick : MonoBehaviour {
     public float debugKickY;
     public float debugKickAng;
 
-    public bool slow;
     Ball ball;
     Rigidbody2D rb;
 
@@ -58,15 +57,5 @@ public class BallKick : MonoBehaviour {
             debugKickAng = 0;
         }
 
-
-        //debug slowing method.
-        if (slow)
-        {
-            Time.timeScale = 0.2f;
-        }
-        else
-        {
-            Time.timeScale = 1;
-        }
 	}
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Shoot {
 
-    float waitDelay = 0;
+    float waitDelay = 0.66f;
 
     public float AIShoot(PlayerStatePattern pl, DecisionEntery de)
     {

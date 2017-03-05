@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Pass{
 
-    float waitDelay = 0;
+    float waitDelay = 0.75f;
 
     public float AIPass(PlayerStatePattern pl, DecisionEntery de)
     {

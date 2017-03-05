@@ -49,15 +49,6 @@ public class PlayerMovementDecision : IPlayerState {
         iTeam = 0;
         iFoe = 0;
 
-        //movement check, if the ball is within a certain range of me then stop moving and wait. 
-        float d = Vector2.Distance(player.transform.position, player.ballReference.transform.position);
-        if(d> player.playerStats.targetMidRange && d< player.playerStats.targetLongRange)
-        {
-            player.currentState = player.sPlayerWait;
-            player.sPlayerWait.SetCurrentWait(0.1f);
-            return;
-        }
-
 
         //iterate through the list of players
         foreach(Player p in GameManager.Instance.GetPlayers())
@@ -89,14 +80,14 @@ public class PlayerMovementDecision : IPlayerState {
         //if a teammate has teh ball 
         if(ballOwner != null && ballOwner.team == player.playerStats.team)
         {
-            Debug.Log("team ball check");
+            //Debug.Log("team ball check");
             //move to a better position***************************************************
             GoToPosition(CalculatePosition(teamPlayers, enemyPlayers, true));
         }
         //if enemy has ball
         else if (ballOwner != null && ballOwner.team != player.playerStats.team)
         {
-            Debug.Log("foe ball check");
+            //Debug.Log("foe ball check");
             //check where it is
             distance = Vector2.Distance(player.ballReference.transform.position, player.transform.position);
 
@@ -124,15 +115,18 @@ public class PlayerMovementDecision : IPlayerState {
         else
         {
 
-            Debug.Log("loose ball check");
+            //Debug.Log("loose ball check");
 
+            //grab my distance from the ball
             distance = Vector2.Distance(player.ballReference.transform.position, player.transform.position);
             int closerPlayers = 0;
 
+            //compare this distance against all of the other players. 
             foreach (Player p in teamPlayers)
             {
                 if (p != null)
                 {
+                    //if they are better suited to get the ball then by all means let them get it. (closer/already chasing)
                     if (Vector2.Distance(player.ballReference.transform.position, p.transform.position) < distance || p.psp.currentState == p.psp.sPlayerChaseBall)
                     {
                         closerPlayers++;
@@ -140,6 +134,7 @@ public class PlayerMovementDecision : IPlayerState {
                 }
             }
 
+            //if we have a sufficient number of players going for the ball already ignore it. otherwise chase.
             if(closerPlayers >= GameManager.Instance.maxPlayersChasingBall)
             {
                 GoToPosition(CalculatePosition(teamPlayers, enemyPlayers, true));
@@ -369,6 +364,7 @@ public class PlayerMovementDecision : IPlayerState {
             if (player.playerStats.position == GameManager.Instance.positions["Forward"])
             {
                 //attacker on defence. (random within middle third)
+                //Debug.Log("Attacker on Def: " + player.playerStats.name);
                 posX = UnityEngine.Random.Range(33, 66);
             }
             else
@@ -455,6 +451,15 @@ public class PlayerMovementDecision : IPlayerState {
     /// </summary>
     private void GoToPosition(Vector2 position)
     {
+        //movement check, if the ball is within a certain range of me then stop moving and wait. 
+        float d = Vector2.Distance(player.transform.position, player.ballReference.transform.position);
+        if (d > player.playerStats.targetMidRange && d < player.playerStats.targetLongRange)
+        {
+            player.currentState = player.sPlayerWait;
+            player.sPlayerWait.SetCurrentWait(0.1f);
+            return;
+        }
+
         //Debug.Log(position);
         player.movement.stopMove();
         player.movement.MoveTo(position);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Attack {
 
-    float waitDelay = 0;
+    float waitDelay = 0.45f;
 
     public float AIAttack(PlayerStatePattern pl, DecisionEntery de)
     {
@@ -16,7 +16,7 @@ public class Attack {
         kickDirection.Normalize();
 
         //take the direction and factor in player attack stats.
-        kickDirection = new Vector2(kickDirection.x * pl.playerStats.attack * pl.playerStats.attackStrengthMultiplier, kickDirection.y * pl.playerStats.attack * pl.playerStats.attackStrengthMultiplier);
+        kickDirection = new Vector2(kickDirection.x * pl.playerStats.attack * pl.playerStats.attackStrengthMultiplier * 4, kickDirection.y * pl.playerStats.attack * pl.playerStats.attackStrengthMultiplier);
 
         //FIRE IN THE HOLE!
         GameManager.Instance.GetComponent<BallKick>().KickBall(kickDirection);

@@ -30,6 +30,7 @@ public class PlayerActionDecision : IPlayerState
     private float n;
 
     private bool teamsArentSet; //a value that allows the system to set who is on what team once and once only.
+    private bool updateExecuting;
     private float waitDelay;
 
     //shoot pass attack.
@@ -61,12 +62,19 @@ public class PlayerActionDecision : IPlayerState
         teamsArentSet = true;
     }
 
-
-    //default state actions. frame by fram actions.
     public void UpdateState()
     {
-        //Debug.Log(player.playerStats.playerName + " Decision began.");
+        if (!updateExecuting)
+        {
+            updateExecuting = true;
+            PlayerManager.Instance.TriggerGameSlow(player);
+        }
+    }
 
+    //default state actions. frame by fram actions.
+    public IEnumerator UpdateStateTest()
+    {
+        //Debug.Log(player.playerStats.playerName + " Decision began.");
         //make sure all shared values are cleared at the beginning of operations. just as a precaution.
         ClearAll();
         //make sure team arrays are populated for future use.
@@ -107,47 +115,38 @@ public class PlayerActionDecision : IPlayerState
             //j has now changed to a random float for us.
             j = Random.Range(1, 100);
 
-            Debug.LogWarning("Averge Weight: " + n);
-            Debug.LogWarning("random chosen: " + j);
+            //Debug.LogWarning("Averge Weight: " + n);
+            //Debug.LogWarning("random chosen: " + j);
             if (j > n)
             {
                 //call user
-                Debug.LogWarning("SUPER CALLED O.O");
+                //Debug.LogWarning("SUPER CALLED O.O");
 
 
                 //if the player is involved
-                //slow the game
+                
                 //open player gui & display options
+                Debug.LogWarning("Wait for iiiiiittttt!");
+                //slow the game
+                PlayerManager.Instance.SlowTime();
                 //wait for player responce (display timer)
+                PlayerManager.Instance.GetPlayerChoice(player, options);
+                yield return new WaitForSeconds(GameManager.Instance.timeSlowDuration);
+                Debug.LogWarning("Done!!!!");
+                PlayerManager.Instance.ResetTime();
                 //deploy user selected option -OR- choose WORST option
+                if(chosenOption == null)
+                {
+                    ChooseOption(false);
+                }
             }
         }
 
-        //choose option.
-        //iterate through all options
-        foreach(DecisionEntery de in options)
+        //If the AI hasn't Been given an option choose one.
+        if (chosenOption == null)
         {
-            if (de != null)
-            {
-                //select the highest weighted option 
-                if (chosenOption == null || chosenOption.weight < de.weight)
-                {
-                    chosenOption = de;
-                }
-                else if (chosenOption != null && chosenOption.weight == de.weight)//tiebreaker
-                {
-                    //do a 50/50 to see which option to choose.
-                    //TODO be more deliberate with this. 50/50 isnt acceptable.
-                    int rand = Random.Range(0, 1);
-                    if (rand == 1)
-                    {
-                        Debug.Log("TIE WAS BROKEN");
-                        chosenOption = de;
-                    }
-                }
-            }
+            chosenOption = ChooseOption(true);
         }
-       
 
         if (chosenOption != null)//if it skips this code then no option was seen. this is more than likely an error.
         {
@@ -204,6 +203,8 @@ public class PlayerActionDecision : IPlayerState
         //move to wait state.
         //Debug.Log(player.playerStats.playerName + " Decision completed.");
         ToPlayerWait(waitDelay);
+        updateExecuting = false;
+        yield return null;
     }
 
     //when the player gains possession of the ball trigger these actions.
@@ -826,6 +827,70 @@ public class PlayerActionDecision : IPlayerState
         return false;
     }
 
+    /// <summary>
+    /// takes a list of decision enteries and chooses an option. true for the best option false for the worst.
+    /// </summary>
+    /// <param name="best">Take the best option in the list if true, take the worst option if false.</param>
+    /// <returns></returns>
+    private DecisionEntery ChooseOption(bool best)
+    {
+        DecisionEntery chosenOption = null;
+        //choose option.
+        //iterate through all options
+        foreach (DecisionEntery de in options)
+        {
+            if (de != null)
+            {
+                if (best)
+                {
+                    //select the highest weighted option 
+                    if (chosenOption == null || chosenOption.weight < de.weight)
+                    {
+                        chosenOption = de;
+                    }
+                    else if (chosenOption != null && chosenOption.weight == de.weight)//tiebreaker
+                    {
+                        //do a 50/50 to see which option to choose.
+                        //TODO be more deliberate with this. 50/50 isnt acceptable.
+                        int rand = Random.Range(0, 1);
+                        if (rand == 1)
+                        {
+                            Debug.Log("TIE WAS BROKEN");
+                            chosenOption = de;
+                        }
+                    }
+                }
+                else
+                {
+                    //select the lowest weighted option that is above zero. 
+                    if (chosenOption == null || (chosenOption.weight > de.weight && de.weight > 0))
+                    {
+                        chosenOption = de;
+                    }
+                    else if (chosenOption != null && chosenOption.weight == de.weight)//tiebreaker
+                    {
+                        //do a 50/50 to see which option to choose.
+                        //TODO be more deliberate with this. 50/50 isnt acceptable.
+                        int rand = Random.Range(0, 1);
+                        if (rand == 0)
+                        {
+                            Debug.Log("TIE WAS BROKEN");
+                            chosenOption = de;
+                        }
+                    }
+                }
+            }
+        }
+        return chosenOption;
+    }
 
+    /// <summary>
+    /// and external way to set this classes chosen option variable.
+    /// </summary>
+    /// <param name="de"></param>
+    public void SetChosenOption(DecisionEntery de)
+    {
+        chosenOption = de;
+    }
 
 }

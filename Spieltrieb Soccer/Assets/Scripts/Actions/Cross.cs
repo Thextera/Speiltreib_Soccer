@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Cross{
 
-    float waitDelay = 0;
+    float waitDelay = 0.1f;
 
     public float AICross(PlayerStatePattern pl, DecisionEntery de)
     {

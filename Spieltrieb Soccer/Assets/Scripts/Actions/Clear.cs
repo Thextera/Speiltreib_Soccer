@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Clear {
 
-    float waitDelay = 0;
+    float waitDelay = 0.1f;
 
     public float AIClear(PlayerStatePattern pl, DecisionEntery de)
     {

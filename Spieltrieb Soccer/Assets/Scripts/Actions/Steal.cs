@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Steal{
 
-    float waitDelay = 0;
+    float waitDelay = 0.25f;
     float successRoll = 0; //the final weighting that will be rolled to determine if a steal will be successfull.
     float finalRoll = 0;
 
