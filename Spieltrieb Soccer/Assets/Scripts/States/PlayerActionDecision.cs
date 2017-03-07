@@ -33,6 +33,9 @@ public class PlayerActionDecision : IPlayerState
     private bool updateExecuting;
     private float waitDelay;
 
+    private float userWaitTimer;
+    public DecisionEntery userDecision;
+
     //shoot pass attack.
     //steal pass attack.
     //goalie?
@@ -127,17 +130,35 @@ public class PlayerActionDecision : IPlayerState
                 
                 //open player gui & display options
                 Debug.LogWarning("Wait for iiiiiittttt!");
+
                 //slow the game
                 PlayerManager.Instance.SlowTime();
+
                 //wait for player responce (display timer)
                 PlayerManager.Instance.GetPlayerChoice(player, options);
-                yield return new WaitForSeconds(GameManager.Instance.timeSlowDuration);
+
+                // our timer. count down to zero OR break when a user desicion has been made.
+                userWaitTimer = GameManager.Instance.timeSlowDuration;
+                while (userWaitTimer > 0 && userDecision == null)
+                {
+                    userWaitTimer -= Time.deltaTime; 
+                    yield return null; 
+                }
+                userWaitTimer = 0;
+
                 Debug.LogWarning("Done!!!!");
+                //reset game speed
                 PlayerManager.Instance.ResetTime();
+
                 //deploy user selected option -OR- choose WORST option
-                if(chosenOption == null)
+                if(userDecision == null)
                 {
                     ChooseOption(false);
+                }
+                else//user chose an option! *************************************************************************************
+                {
+                    //perhaps change this?
+                    chosenOption = userDecision;
                 }
             }
         }

@@ -8,10 +8,10 @@ public class PlayerRangesGizmo : MonoBehaviour {
 
     void OnDrawGizmosSelected()
     {
-        UnityEditor.Handles.DrawWireDisc(p.transform.position,Vector3.back,p.targetShortRange);
+        //UnityEditor.Handles.DrawWireDisc(p.transform.position,Vector3.back,p.targetShortRange);
 
-        UnityEditor.Handles.DrawWireDisc(p.transform.position, Vector3.back, p.targetMidRange);
+        //UnityEditor.Handles.DrawWireDisc(p.transform.position, Vector3.back, p.targetMidRange);
 
-        UnityEditor.Handles.DrawWireDisc(p.transform.position, Vector3.back, p.targetLongRange);
+        //UnityEditor.Handles.DrawWireDisc(p.transform.position, Vector3.back, p.targetLongRange);
     }
 }

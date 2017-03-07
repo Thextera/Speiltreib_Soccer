@@ -7,6 +7,7 @@ public class DecisionEntery{
     public int weight;
     public int name; //based off of the dictionary in game manager.
     public Player target;
+    public Vector2 shotTarget;
 
     public DecisionEntery(int initWeight, int initName)
     {
