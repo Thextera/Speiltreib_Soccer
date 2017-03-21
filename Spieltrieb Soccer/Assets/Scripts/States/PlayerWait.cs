@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerWait : IPlayerState {
 
     private float waitDelay;
+    private bool waitForTimer;
+    private Rigidbody2D rb;
     //what player owns this instance of the state?
     private readonly PlayerStatePattern player;
 
@@ -12,6 +14,7 @@ public class PlayerWait : IPlayerState {
     public PlayerWait(PlayerStatePattern playerStatePatern)
     {
         player = playerStatePatern;
+        rb = player.GetComponent<Rigidbody2D>();
     }
 
     //default state actions. frame by fram actions.
@@ -22,11 +25,18 @@ public class PlayerWait : IPlayerState {
         //TODO use of timescale could mess with durations! test this later.
 
         //if the delay is less than 0 never break from this. it means some external command will do it for you.
-        if(waitDelay <= 0)
+        if(waitDelay <= 0 && waitForTimer)
         {
             waitDelay = 0;
             ToPlayerMovementDecision();
         }
+
+        //if the player is moving in the wait state stop it. (this will likely work against me later... TODO lerp to a quick stop later OR EVEN BETTER tell movement to lerp to a slow stop.)
+        if(rb.velocity != Vector2.zero)
+        {
+            rb.velocity = Vector2.zero;
+        }
+        
     }
 
     //when the player gains possession of the ball trigger these actions.
@@ -68,6 +78,12 @@ public class PlayerWait : IPlayerState {
     public void SetCurrentWait(float wd)
     {
         waitDelay = wd;
+        waitForTimer = true;
+    }
+
+    public void WaitUntilDismissed()
+    {
+        waitForTimer = false;
     }
 
     public string ReturnNameString()

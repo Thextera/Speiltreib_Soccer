@@ -40,6 +40,9 @@ public class GameManager : MonoBehaviour {
     public Dictionary<string, int> teams;
     public Dictionary<string, int> AIActions;
 
+    public float gameTimer;
+    public bool gameTimerRunning = false;
+
     [Header("GameRules")]
     public int maxPlayersChasingBall = 2; //maximum number of players allowed to be in chasing state per team.
     public float stealStatThreshold = 1.5f; //the % of stats a defender must have to have a chance to avoid a steal. Default is 1.0f.
@@ -48,6 +51,7 @@ public class GameManager : MonoBehaviour {
     public float playerInputWait = 2.5f; //how long will the game wait for players to input.
     public float maxPossessionTime = 1.4f;
     public float timeSlowDuration = 0.75f;
+    public float GoalResetDelay = 0.75f;
 
     PlayerInit[] testInitList;
 
@@ -104,6 +108,20 @@ public class GameManager : MonoBehaviour {
         BeginGame(testInitList);
     }
 
+    private void OnEnable()
+    {
+        //sub to events here.
+        EventManager.OnGoal += TeamScored;
+        EventManager.OnWhistleBlow += ContinueGame;
+    }
+
+    private void OnDisable()
+    {
+        //unsub to events here.
+        EventManager.OnGoal -= TeamScored;
+        EventManager.OnWhistleBlow -= ContinueGame;
+    }
+
     void BeginGame(PlayerInit[] playerList)
     {
         //TODO instatiate different AI types here.
@@ -125,12 +143,16 @@ public class GameManager : MonoBehaviour {
                 //run the player's constructor so it correctly sets all its own values.
                 //thar be dragons... :(
                 p.SetPlayerStartingValues(pi.pCard.speed, pi.pCard.attack, pi.pCard.defence, pi.pCard.shoot, pi.pCard.pass, pi.pCard.dribble, pi.teamNumber, pi.pCard.position, pi.fieldStartPosition, pi.pCard.playerName, pi.AI);
-
+                //default the players to be waiting.
                 //TODO possibly set up a second constructor for visuals.
 
                 i++;
             }
         }
+
+        EventManager.Instance.GameBegin();
+
+
     }
 
     //TODO the game end command must clear out all payer instances and the list attached to them.
@@ -139,10 +161,16 @@ public class GameManager : MonoBehaviour {
     private void Update()
     {
         //Time.timeScale = gameSpeed;
+        //sets a timer for the game. slows with slow-motion.
+        if (gameTimerRunning)
+        {
+            gameTimer += Time.deltaTime * Time.timeScale;
+        }
+        
 
         if (Input.GetKeyDown(KeyCode.Space) == true)
         {
-            EventManager.Instance.FirstWhistleBlow();
+            EventManager.Instance.WhistleBlow();
         }
     }
 
@@ -156,6 +184,16 @@ public class GameManager : MonoBehaviour {
     public Player[] GetPlayers()
     {
         return players;
+    }
+
+    private void TeamScored(int Team)
+    {
+        gameTimerRunning = false;
+    }
+
+    private void ContinueGame()
+    {
+        gameTimerRunning = true;
     }
 
 }

@@ -31,20 +31,29 @@ public class EventManager : MonoBehaviour {
     }
     #endregion
 
+    //when a goal is scored
     public delegate void GoalAction(int team);
     public static event GoalAction OnGoal;
 
-    public delegate void FirstWhistleBlowAction();
-    public static event FirstWhistleBlowAction OnFirstWhistleBlow;
+    //tell players theat the ref's whistle ahas been blown (TRiggers Initial movement)
+    public delegate void WhistleBlowAction();
+    public static event WhistleBlowAction OnWhistleBlow;
 
+    //triggered when game begins. call any initializations from this.
     public delegate void GameBeginAction();
     public static event GameBeginAction OnGameBegin;
 
+    //triggered when game ends. use this for cleanup and moving back to main gui.
     public delegate void GameEndAction();
     public static event GameEndAction OnGameOver;
 
+    //remove this?
     public delegate void BallPossessedAction();
     public static event BallPossessedAction OnBallPossessed;
+
+    //trigger when its time to reset the locations of all the players.
+    public delegate void PlayerLocationResetAction();
+    public static event PlayerLocationResetAction OnResetAllPlayerLocations;
 
     /*
     void OnGUI()
@@ -67,11 +76,11 @@ public class EventManager : MonoBehaviour {
         }
     }
 
-    public void FirstWhistleBlow()
+    public void WhistleBlow()
     {
-        if(OnFirstWhistleBlow != null)
+        if(OnWhistleBlow != null)
         {
-            OnFirstWhistleBlow();
+            OnWhistleBlow();
         }
     }
 
@@ -82,5 +91,21 @@ public class EventManager : MonoBehaviour {
        //     Debug.Log("POSSESED");
        //     OnBallPossessed();
        // }
+    }
+
+    public void ResetPlayerPositions()
+    {
+        if(OnResetAllPlayerLocations != null)
+        {
+            OnResetAllPlayerLocations();
+        }
+    }
+
+    public void GameBegin()
+    {
+        if(OnGameBegin != null)
+        {
+            OnGameBegin();
+        }
     }
 }

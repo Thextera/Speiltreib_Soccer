@@ -10,6 +10,8 @@ public class PlayerStatePattern : MonoBehaviour {
     public float possessionRange;
     public Player playerStats;
     public string state;
+    private Vector2 startLocation;
+    private bool disabledForGoal;
 
     private float possessionTimer;
 
@@ -39,15 +41,21 @@ public class PlayerStatePattern : MonoBehaviour {
     private void OnEnable()
     {
         //sub to events here.
-        EventManager.OnFirstWhistleBlow += EngagePlayerMovement;
+        EventManager.OnGameBegin += WaitForWhistle;
+        EventManager.OnWhistleBlow += EngagePlayerMovement;
         EventManager.OnBallPossessed += PlayerPossession;
+        EventManager.OnGoal += TeamScored;
+        EventManager.OnResetAllPlayerLocations += ResetLocation;
     }
 
     private void OnDisable()
     {
         //unsub to events here.
-        EventManager.OnFirstWhistleBlow -= EngagePlayerMovement;
+        EventManager.OnGameBegin -= WaitForWhistle;
+        EventManager.OnWhistleBlow -= EngagePlayerMovement;
         EventManager.OnBallPossessed -= PlayerPossession;
+        EventManager.OnGoal -= TeamScored;
+        EventManager.OnResetAllPlayerLocations -= ResetLocation;
     }
 
 
@@ -55,6 +63,7 @@ public class PlayerStatePattern : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        startLocation = transform.position;
         ballReference = FindObjectOfType<Ball>();
         movement = GetComponent<PlayerMove>();
         currentState = sPlayerWait;
@@ -64,25 +73,25 @@ public class PlayerStatePattern : MonoBehaviour {
     void FixedUpdate()
     {
         //print(currentState + " + " + gameObject);
-        state = currentState.ReturnNameString();
-        currentState.UpdateState();
+        if (!disabledForGoal)
+        {
+            state = currentState.ReturnNameString();
+            currentState.UpdateState();
 
-        if(possessesBall)
-        {
-            possessionTimer -= Time.deltaTime;
-        }
-        else
-        {
-            possessionTimer = GameManager.Instance.maxPossessionTime;
-        }
-
-        if(possessionTimer <= 0)
-        {
-            if(currentState == sPlayerMovingToPosition)
+            if (possessesBall)
             {
-                movement.stopMove();
+                possessionTimer -= Time.deltaTime;
             }
-            currentState = sPlayerActionDecision;
+            else
+            {
+                possessionTimer = GameManager.Instance.maxPossessionTime;
+            }
+
+            if (possessionTimer <= 0)
+            {
+                StopMovement();//hard
+                currentState = sPlayerActionDecision;
+            }
         }
 
 
@@ -126,10 +135,8 @@ public class PlayerStatePattern : MonoBehaviour {
     {
         //trigger this when being stolen from.
         //if you are moving stop moving.
-        if (currentState == sPlayerMovingToPosition)
-        {
-            movement.stopMove();
-        }
+        StopMovement();//hard
+
         //reset state tree. this will represent a dribble action. Later an animator trigger could be hooked up to this.
         currentState = sPlayerWait;
 
@@ -140,6 +147,33 @@ public class PlayerStatePattern : MonoBehaviour {
             sPlayerWait.SetCurrentWait(0.33f);
         }
         
+    }
+
+    private void TeamScored(int team)
+    {
+        disabledForGoal = true;
+        //sort if a player should cheer based upon who scored.
+
+        StopMovement();//hard
+        currentState = sPlayerWait;
+        sPlayerWait.WaitUntilDismissed();
+        Invoke("AIResume", GameManager.Instance.GoalResetDelay);
+
+        //if statement for future animator.
+        if (team == playerStats.team)
+        {
+
+        }
+
+    }
+
+    private void WaitForWhistle()
+    {
+        Debug.LogWarning("Waiting For Whistle");
+        //when the players are waiting for the whistle make them stay in the waiting state.
+        StopMovement();//hard
+        currentState = sPlayerWait;
+        sPlayerWait.WaitUntilDismissed();
     }
 
     public void possessBall()
@@ -158,6 +192,24 @@ public class PlayerStatePattern : MonoBehaviour {
     {
         //print(playerStats.playerName + "'s possession was checked " + possessesBall);
         return possessesBall;
+    }
+
+    private void ResetLocation()
+    {
+        transform.position = startLocation;
+    }
+
+    private void StopMovement()
+    {
+        if (currentState == sPlayerMovingToPosition)
+        {
+            movement.stopMove();
+        }
+    }
+
+    private void AIResume()
+    {
+        disabledForGoal = false;
     }
 
 

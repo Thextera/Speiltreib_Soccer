@@ -35,18 +35,60 @@ public class PlayerManager : MonoBehaviour {
     bool userPollFlag = false;
     private float slowTimer;
 
+    [Header("UI Elements")]
     public Image timerImage;
+    public Text gameTimer;
     public Button attackButt; //   :3
     public Button passButt;
     public Button clearButt;
     public Button shootButt;
+    public Text rTeamScore;
+    public Text lTeamScore;
+    public Image fadeScreenImage;
+    public Image countdownREADYImage;
+    public Image countdownGOImage;
+
+    public float screenFadeDuration;
+    public float readyFadeLength;
+    public float readyFullALphaDuration;
+    public float GoFadeLength;
+    public float countdownMaxDuration;
+    public float countdownSingleImageDuration = 0.75f;
 
     public DecisionEntery userDecision = null;
+
+    private CameraControl ballCamera;
+
+    private int rScore = 0;
+    private int bScore = 0;
     private PlayerStatePattern currentPlayer;
+    private Ball ballReference;
+    private bool fadeLock = false;
 
     private void Awake()
     {
         DisableAllUIElements();
+        ballReference = FindObjectOfType<Ball>();
+        ballCamera = FindObjectOfType<CameraControl>();
+    }
+
+    private void OnEnable()
+    {
+        //sub to events here.
+        EventManager.OnGoal += TeamScored;
+        EventManager.OnGameBegin += InitializeGame;
+    }
+
+    private void OnDisable()
+    {
+        //unsub to events here.
+        EventManager.OnGoal -= TeamScored;
+        EventManager.OnGameBegin += InitializeGame;
+    }
+
+    private void Update()
+    {
+        gameTimer.text = GameManager.Instance.gameTimer.ToString("F2");
     }
 
     public void TriggerGameSlow(PlayerStatePattern p)
@@ -363,4 +405,149 @@ public class PlayerManager : MonoBehaviour {
 
         return touchLocation;
     }
+
+    public void TeamScored(int Team)
+    {
+        if(Team == 0)//right scored
+        {
+            //add 1 to right team score counter.
+            rScore += 1;
+            rTeamScore.text = rScore.ToString();
+        }
+        else
+        {
+            //add 2 to left team score counter.
+            bScore += 1;
+            lTeamScore.text = bScore.ToString();
+        }
+
+        //fade the screen to white and then reset the game.
+        //disable the net's rigidbody so it cant trigger multiple times.
+        DisarmNet();
+        StartCoroutine(CrossFadeAndReset());
+    }
+
+    private IEnumerator CrossFadeAndReset()
+    {
+        //let the AI wait and cheer for just a little bit then begin the reset proccess.
+        yield return new WaitForSeconds(GameManager.Instance.GoalResetDelay);
+
+        //fade the screen to white.
+        StartCoroutine(FadeTo(1, screenFadeDuration));
+        yield return new WaitForSeconds(screenFadeDuration + 0.1f);
+
+        //while the screen is white move all the players back to where they started. and the ball
+        //re-enable net rigidBody.
+        EventManager.Instance.ResetPlayerPositions();
+        ballReference.resetPosition();
+        ballCamera.HardCameraReset();
+        ArmNet();
+
+        //now that everything is in place fade the screen back to the game
+        StartCoroutine(FadeTo(0, screenFadeDuration));
+        yield return new WaitForSeconds(screenFadeDuration + 0.1f);
+
+        //count the game back in again so the player has some time to react.
+        StartBeginGameCountdown();
+        Invoke("StartPlayers", countdownMaxDuration);
+        //whistle sound here?
+        
+
+        yield return null;
+    }
+
+    /// <summary>
+    /// Trigger game Gui when the game begins.
+    /// </summary>
+    private void InitializeGame()
+    {
+        //count the game in.
+        StartBeginGameCountdown();
+        Invoke("StartPlayers", countdownMaxDuration);
+        //whistle sound here?
+    }
+
+    private void StartPlayers()
+    {
+        EventManager.Instance.WhistleBlow();
+    }
+
+
+    /// <summary>
+    /// Disables scripts on the nets in order to stop nets from counting multiple goals.
+    /// </summary>
+    private void DisarmNet()
+    {
+        foreach(GoalZone gz in Field.Instance.gz)
+        {
+            gz.enabled = false;
+        }
+    }
+
+    /// <summary>
+    /// enables scripts on nets.
+    /// </summary>
+    private void ArmNet()
+    {
+        foreach (GoalZone gz in Field.Instance.gz)
+        {
+            gz.enabled = true;
+        }
+    }
+
+    /// <summary>
+    /// Fades the Entire Screen to specified alpha value
+    /// </summary>
+    /// <param name="aValue">value to fade to</param>
+    /// <param name="aTime">how long the fade should take</param>
+    /// <returns></returns>
+    IEnumerator FadeTo(float aValue, float aTime)
+    {
+        float alpha = fadeScreenImage.color.a;
+        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / aTime)
+        {
+            Color newColor = new Color(1, 1, 1, Mathf.Lerp(alpha, aValue, t));
+            fadeScreenImage.color = newColor;
+            yield return null;
+        }
+    }
+
+    /// <summary>
+    /// Fades specific object to specified alpha value
+    /// </summary>
+    /// <param name="toFade">the object in question to fade. Must have color Param</param>
+    /// <param name="initDelay">should the function wait before executing?</param>
+    /// <param name="aValue">value to fade to</param>
+    /// <param name="aTime">how long the fade should take</param>
+    /// <returns></returns>
+    IEnumerator FadeTo(Image toFade, float initDelay, float aValue, float aTime)
+    {
+        //give us a delay
+        yield return new WaitForSeconds(initDelay);
+
+        //if we are fading a number out that is already faded pop it in first.
+        if(aValue == 0 && toFade.color.a != 1)
+        {
+            Color newColor = new Color(1, 1, 1, 1);
+            toFade.color = newColor;
+        }
+
+        //begin the fade process.
+        float alpha = toFade.color.a;
+        for (float t = 0.0f; t < 1.0f; t += Time.deltaTime / aTime)
+        {
+            Color newColor = new Color(1, 1, 1, Mathf.Lerp(alpha, aValue, t));
+            toFade.color = newColor;
+            yield return null;
+        }
+    }
+
+
+    public void StartBeginGameCountdown()
+    {
+        StartCoroutine(FadeTo(countdownREADYImage, 0, 1, readyFadeLength));
+        StartCoroutine(FadeTo(countdownREADYImage, readyFadeLength + 0.05f, 0, readyFullALphaDuration));
+        StartCoroutine(FadeTo(countdownGOImage, readyFullALphaDuration+readyFadeLength+0.05f, 0, GoFadeLength));
+    }
+
 }

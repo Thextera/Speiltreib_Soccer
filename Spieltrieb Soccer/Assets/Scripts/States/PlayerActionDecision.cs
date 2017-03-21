@@ -129,7 +129,7 @@ public class PlayerActionDecision : IPlayerState
                 //if the player is involved
                 
                 //open player gui & display options
-                Debug.LogWarning("Wait for iiiiiittttt!");
+                //Debug.LogWarning("Wait for iiiiiittttt!");
 
                 //slow the game
                 PlayerManager.Instance.SlowTime();
@@ -146,7 +146,7 @@ public class PlayerActionDecision : IPlayerState
                 }
                 userWaitTimer = 0;
 
-                Debug.LogWarning("Done!!!!");
+                //Debug.LogWarning("Done!!!!");
                 //reset game speed
                 PlayerManager.Instance.ResetTime();
 

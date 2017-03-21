@@ -54,6 +54,7 @@ public class PlayerMove : MonoBehaviour{
     }
     /// <summary>
     /// Method to be called when the player needs to immediately stop moving.
+    /// <param name="hard">hard stops do not reset player AI states.</param>
     /// </summary>
     public void stopMove()
     {

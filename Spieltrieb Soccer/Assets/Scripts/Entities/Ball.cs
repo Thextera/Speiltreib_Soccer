@@ -14,14 +14,17 @@ public class Ball : MonoBehaviour {
     public float energyLostOnCollision;
     public float angVelLostOnCollision;
 
-    private LayerMask defaultMask;
-    public LayerMask possessedMask;
-
     [Header("Vel Stop Thresholds")]
     public float velXStop = 0.1f;
     public float velYStop = 0.1f;
     public float VelAngStop = 1;
     public float rotationalThreshold = 25;
+
+    [Header("Misc Values")]
+    private LayerMask defaultMask;
+    public LayerMask possessedMask;
+    private GameObject previousBallHolder;
+    private Vector2 startLocation;
 
     private Vector2 ParentDestination;
     private Rigidbody2D parentBody;
@@ -32,6 +35,7 @@ public class Ball : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         rb = GetComponent<Rigidbody2D>();
+        startLocation = transform.position;
         defaultMask = gameObject.layer;
 	}
 	
@@ -152,6 +156,7 @@ public class Ball : MonoBehaviour {
         print("possessed " + possessedMask.value);
         transform.parent = possessingUnit.transform;
         EventManager.Instance.BallPossessed();
+        previousBallHolder = possessingUnit;
     }
 
     public void UnpossessBall()
@@ -171,5 +176,10 @@ public class Ball : MonoBehaviour {
     private void ChangeLayersOnUnpossession()
     {
         gameObject.layer = 9;
+    }
+
+    public void resetPosition()
+    {
+        transform.position = startLocation;
     }
 }

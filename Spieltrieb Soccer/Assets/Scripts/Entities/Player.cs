@@ -34,6 +34,8 @@ public class Player : MonoBehaviour {
     public float targetMidRange = 5;
     public float targetShortRange = 1;
 
+    public Vector2 StartLocation;
+
     /// <summary>
     /// initializes player. MUST BE CALLED WHEN INSTANCING A PLAYER OR ELSE DEFAULT VALUES WILL BE GIVEN.
     /// </summary>
@@ -56,6 +58,7 @@ public class Player : MonoBehaviour {
         dribble = initDribble;
         position = initPosition;
         playerName = initPlayerName;
+        StartLocation = initLocation;
         AI = initAI;
 
         //name the game object the same name as ME! this makes troublshooting easier.

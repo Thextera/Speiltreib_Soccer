@@ -11,9 +11,11 @@ public class GoalZone : MonoBehaviour {
     public Vector2 goalPostTwoField;
     //facing right variable used to tell the net what direction its facing. this is used when calculating shots for the AI. (they use the goalposts as references... they will later use the goalies location as well.)
     public bool facingRight = true;
+    private Rigidbody2D rb;
 
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
         //TODO changing the sprite might have an odd effect on these calculations. may have to find a better way to do them once art comes in.
 
         //grap teh sprite renderer and get the size of the object.
@@ -55,7 +57,7 @@ public class GoalZone : MonoBehaviour {
     }
 
     //wait untill something bumps the goal zone.
-    void OnTriggerEnter(Collider col)
+    void OnTriggerEnter2D(Collider2D col)
     {
         //check if the object that collided was the ball. if so then call a goal.
         if(col.gameObject.GetComponent<Ball>() != null)

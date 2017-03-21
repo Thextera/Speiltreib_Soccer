@@ -14,6 +14,11 @@ public class CameraControl : MonoBehaviour {
         ball = FindObjectOfType<Ball>();
 	}
 
+    public void HardCameraReset()
+    {
+        transform.position = ball.transform.position;
+    }
+
     private void Update()
     {
         if(Time.timeScale == 1)
