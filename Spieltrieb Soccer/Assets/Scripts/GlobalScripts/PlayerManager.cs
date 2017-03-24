@@ -440,7 +440,7 @@ public class PlayerManager : MonoBehaviour {
         //re-enable net rigidBody.
         EventManager.Instance.ResetPlayerPositions();
         ballReference.resetPosition();
-        ballCamera.HardCameraReset();
+        ballCamera.HardCameraResetToBall();
         ArmNet();
 
         //now that everything is in place fade the screen back to the game
