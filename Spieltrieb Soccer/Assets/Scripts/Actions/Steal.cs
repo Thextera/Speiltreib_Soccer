@@ -14,7 +14,7 @@ public class Steal{
 
     public float AISteal(PlayerStatePattern pl, DecisionEntery de)
     {
-        Debug.Log("steal triggered by " + pl.playerStats.playerName);
+        //Debug.Log("steal triggered by " + pl.playerStats.playerName);
         //return 0;
 
         attackerCombinedAttribute = pl.playerStats.speed + pl.playerStats.dribble; //attackers will be gaged by speed and dribble.
@@ -50,7 +50,7 @@ public class Steal{
             //steal successfull!!!
             de.target.SendMessage("BallStolen", true);
             pl.ballReference.UnpossessBall();
-            pl.ballReference.PossessBall(pl.gameObject);
+            pl.ballReference.PossessBall(pl.playerStats);
             return waitDelay;
         }
         else

@@ -23,8 +23,10 @@ public class Ball : MonoBehaviour {
     [Header("Misc Values")]
     private LayerMask defaultMask;
     public LayerMask possessedMask;
-    private GameObject previousBallHolder;
+    private Player previousBallHolder;
     private Vector2 startLocation;
+    public bool pause;
+    private float possesionCheckCounter;
 
     private Vector2 ParentDestination;
     private Rigidbody2D parentBody;
@@ -43,7 +45,7 @@ public class Ball : MonoBehaviour {
 	void FixedUpdate () {
 
         #region LooseBall
-        if (possesed == false)
+        if (!possesed)
         {
             //natural drag below. as a ball normally would this ball must slow down when rolling. unity's physics 
             //only applies when a player is not possesing the ball.
@@ -115,7 +117,7 @@ public class Ball : MonoBehaviour {
             
             #endregion
         }
-        else//ball is possessed...
+        else //ball is possessed...
         {
             //just checking if my parent is null...
             if(gameObject.transform.parent != null)
@@ -138,6 +140,24 @@ public class Ball : MonoBehaviour {
                 }
             }
         }
+
+        #region breakPosession
+
+        //this counter means that the code will only check for possession every 10 frames. this saves on cpu and memory.
+        //it may also make this code safer with the AIs. 
+        possesionCheckCounter++;
+        if(possesionCheckCounter > 9)
+        {
+            //check if the ball holder thinks he is posessing. this means the ball trusts the AI to know if something is possessed or not.
+            //this breaks the ball out of any locked states after 10 fixed updates have passed.
+            if (previousBallHolder != null && !previousBallHolder.psp.isPossessing())
+            {
+                UnpossessBall();
+            }
+            possesionCheckCounter = 0;
+        }
+
+        #endregion
     }
 
     //when a ball hits an object, it makes a sound and generates heat. this means lost energy, 
@@ -148,15 +168,18 @@ public class Ball : MonoBehaviour {
         //rb.angularVelocity = rb.angularVelocity * angVelLostOnCollision;
     }
 
-    public void PossessBall(GameObject possessingUnit)
+    public void PossessBall(Player possessingUnit)
     {
-        possesed = true;
-        rb.isKinematic = true;
-        gameObject.layer = 10;
-        print("possessed " + possessedMask.value);
-        transform.parent = possessingUnit.transform;
-        EventManager.Instance.BallPossessed();
-        previousBallHolder = possessingUnit;
+        if (!possesed)
+        {
+            possesed = true;
+            rb.isKinematic = true;
+            gameObject.layer = 10;
+            //print("possessed " + possessedMask.value);
+            transform.parent = possessingUnit.transform;
+            EventManager.Instance.BallPossessed();
+            previousBallHolder = possessingUnit;
+        }
     }
 
     public void UnpossessBall()
@@ -165,7 +188,7 @@ public class Ball : MonoBehaviour {
         rb.isKinematic = false;
         transform.parent = null;
         Invoke("ChangeLayersOnUnpossession", 0.2f);
-        print("Unpossessed " + defaultMask.value);
+        //print("Unpossessed " + defaultMask.value);
     }
 
     public bool IsPossessed()
@@ -181,5 +204,16 @@ public class Ball : MonoBehaviour {
     public void resetPosition()
     {
         transform.position = startLocation;
+    }
+
+    public void PauseBall()
+    {
+        pause = true;
+        print("Pause");
+    }
+
+    public void UnpauseBall()
+    {
+        pause = false;
     }
 }

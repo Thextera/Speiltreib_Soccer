@@ -52,6 +52,7 @@ public class GameManager : MonoBehaviour {
     public float maxPossessionTime = 1.4f;
     public float timeSlowDuration = 0.75f;
     public float GoalResetDelay = 0.75f;
+    public float universalAnimationDuration = 0.33f;
 
     PlayerInit[] testInitList;
 
@@ -143,7 +144,9 @@ public class GameManager : MonoBehaviour {
                 //run the player's constructor so it correctly sets all its own values.
                 //thar be dragons... :(
                 p.SetPlayerStartingValues(pi.pCard.speed, pi.pCard.attack, pi.pCard.defence, pi.pCard.shoot, pi.pCard.pass, pi.pCard.dribble, pi.teamNumber, pi.pCard.position, pi.fieldStartPosition, pi.pCard.playerName, pi.AI);
-                //default the players to be waiting.
+                p.AddAttack("DragonKick",1);
+                p.AddAttack("FlameStrike",3);
+                //default theDragonKick" players to be waiting.
                 //TODO possibly set up a second constructor for visuals.
 
                 i++;

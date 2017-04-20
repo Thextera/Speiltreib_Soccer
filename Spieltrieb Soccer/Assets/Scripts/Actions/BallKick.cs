@@ -19,6 +19,7 @@ public class BallKick : MonoBehaviour {
     //adds force to the ball as if it was kicked.
     public void KickBall(Vector2 force)
     {
+        print("Kick");
         //tell the ball that it is loose and no one has possession of it.
         ball.UnpossessBall();
         //add the force of the kick to the ball.
@@ -43,19 +44,5 @@ public class BallKick : MonoBehaviour {
         rb = ball.gameObject.GetComponent<Rigidbody2D>();
         
 	}
-	
-	// Update is called once per frame
-	void FixedUpdate () {
-		
-        //quick n dirty method to test if the kick function is working.
-        if(debugKickX != 0 || debugKickY != 0 || debugKickAng != 0)
-        {
-            //kick then reset.
-            KickBall(new Vector2(debugKickX, debugKickY), debugKickAng);
-            debugKickX = 0;
-            debugKickY = 0;
-            debugKickAng = 0;
-        }
 
-	}
 }

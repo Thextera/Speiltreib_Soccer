@@ -8,6 +8,13 @@ public class Pass{
 
     public float AIPass(PlayerStatePattern pl, DecisionEntery de)
     {
+        //if desicion entery's special string isnt null then trigger the special.
+        //the attack manager will then handle the rest.
+        if (de.special != null)
+        {
+            AttackManager.Instance.ExecuteAbility(de.special, pl.playerStats);
+        }
+
         Vector2 kickDirection;
 
         kickDirection = (de.target.transform.position - pl.transform.position);

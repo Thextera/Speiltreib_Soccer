@@ -173,6 +173,40 @@ public class PlayerActionDecision : IPlayerState
         {
             //TODO fix this complete hack. :(
 
+            //do a "quick" check then engage the special flag if needed.
+
+            #region SpecialAttackCheck
+            //if your an AI check for special.
+            if (player.playerStats.AI == true)
+            {
+                //check if the chosen option has a comperable special.
+                foreach (KeyValuePair<string, int> attacks in player.playerStats.SPAttacks)
+                {
+                    //if there is not a special already saved check to grab one. (this means if you have 2 specials matching the type you get 2 rolls to use them. (at 50% to get a second roll.))
+                    if (chosenOption.special == null || Random.Range(0,2) > 0)
+                    {
+                        //here is our direct comparison. if they do not match then they are not compatable types. 
+                        if (AttackManager.Instance.GetAttackParentAction(attacks.Key) == chosenOption.name)
+                        {
+                            //check weighting, small random draw. MAGIC NUMBERS. CHANGE LATER!
+                            if(chosenOption.weight > 60 && Random.Range(0,10) > 3)
+                            {
+                                //if the weight is above 60 and a random of 70% is proc'ed then allow the special to trigger.
+                                chosenOption.special = attacks.Key;
+                            }
+                            //check special remaining count. 
+                            if(attacks.Value <= 0)
+                            {
+                                //if you have no uses left null the special(It then cant be triggered) and continue.
+                                chosenOption.special = null;
+                            }
+                        }
+                    }
+                }
+            }
+
+            #endregion
+
             //call action here
             //I WOULDVE RATHERED USE A SWITCH STATEMENT BUT I GUESS C# DOESNT LIKE USING THOSE WITH DICTIONARIES >.> #sass
             if (chosenOption.name == GameManager.Instance.AIActions["Attack"])
@@ -205,7 +239,7 @@ public class PlayerActionDecision : IPlayerState
             }
             else if (chosenOption.name == GameManager.Instance.AIActions["NotOpen"])
             {
-                Debug.Log(player.playerStats.playerName + " has decided he is open");
+                //Debug.Log(player.playerStats.playerName + " has decided he is open");
             }
             else if (chosenOption.name == GameManager.Instance.AIActions["Dive"])
             {
@@ -216,6 +250,10 @@ public class PlayerActionDecision : IPlayerState
                 Debug.LogError("Something went wrong when choosing an action. Chosen option name is invalid. Please check chosen option name.");
             }
 
+        }
+        else
+        {
+            Debug.LogError("No valid choosenOption Available. Operation skipped.");
         }
 
         //reset option list.

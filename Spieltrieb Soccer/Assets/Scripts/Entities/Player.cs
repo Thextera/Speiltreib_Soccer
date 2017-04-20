@@ -12,6 +12,9 @@ public class Player : MonoBehaviour {
     public PlayerStatePattern psp;
     public SpriteRenderer IDRing;
 
+    public float maxHealth = 100;
+    public float currentHealth;
+
     public float speed;
     public float attack;
     public float defence;
@@ -21,6 +24,8 @@ public class Player : MonoBehaviour {
     public string playerName;
     public int position;
     public int team;
+
+    public Dictionary<string, int> SPAttacks;
 
     public float attackStrengthMultiplier;
 
@@ -61,6 +66,9 @@ public class Player : MonoBehaviour {
         StartLocation = initLocation;
         AI = initAI;
 
+        //set player health
+        currentHealth = maxHealth;
+
         //name the game object the same name as ME! this makes troublshooting easier.
         this.gameObject.name = initPlayerName;
         
@@ -85,7 +93,14 @@ public class Player : MonoBehaviour {
         //move player into specified starting position.
         transform.position = initLocation;
 
+        SPAttacks = new Dictionary<string, int>();
 
+    }
+
+    //set an array of attacks to be used later.
+    public void AddAttack(string attack, int uses)
+    {
+        SPAttacks.Add(attack,uses);
     }
 
     public void UpdateSpeed(float uSpeed)

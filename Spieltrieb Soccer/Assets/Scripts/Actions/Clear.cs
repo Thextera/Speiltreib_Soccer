@@ -8,6 +8,13 @@ public class Clear {
 
     public float AIClear(PlayerStatePattern pl, DecisionEntery de)
     {
+        //if desicion entery's special string isnt null then trigger the special.
+        //the attack manager will then handle the rest.
+        if (de.special != null)
+        {
+            AttackManager.Instance.ExecuteAbility(de.special, pl.playerStats);
+        }
+
         //create the direction we want to kick the ball.
         Vector2 kickDirection = Vector2.zero;
 

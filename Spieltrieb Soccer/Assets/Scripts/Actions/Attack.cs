@@ -8,6 +8,28 @@ public class Attack {
 
     public float AIAttack(PlayerStatePattern pl, DecisionEntery de)
     {
+        //if desicion entery's special string isnt null then trigger the special.
+        //the attack manager will then handle the rest.
+        if (de.special != null)
+        {
+            AttackManager.Instance.ExecuteAbility(de.special, pl.playerStats);
+            new Task(CalculateAttack(pl, de, true));
+        }
+        else
+        {
+            new Task(CalculateAttack(pl, de, false));
+        }
+
+        return waitDelay;
+    }
+
+    public IEnumerator CalculateAttack(PlayerStatePattern pl, DecisionEntery de, bool wait)
+    {
+        if(wait)
+        {
+            yield return new WaitForSeconds(GameManager.Instance.universalAnimationDuration);
+        }
+
         //set up the direction of the attack.
         Vector2 kickDirection;
 
@@ -22,8 +44,10 @@ public class Attack {
         GameManager.Instance.GetComponent<BallKick>().KickBall(kickDirection);
         pl.dePossessBall();
 
+        Debug.Log("Attack Target is: " + de.target);
         Debug.Log("Attack triggered by " + pl.playerStats.playerName + " towards: " + kickDirection);
-        return waitDelay;
+
+        yield return null;
     }
 
     public float UserAttack(PlayerStatePattern pl, DecisionEntery de)

@@ -56,7 +56,7 @@ public class PlayerChaseBall : IPlayerState {
         if (distanceFromBall < player.possessionRange  && !player.ballReference.IsPossessed())
         {
             player.possessBall();
-            player.ballReference.PossessBall(player.gameObject);
+            player.ballReference.PossessBall(player.playerStats);
         }
         else if(distanceFromBall > player.playerStats.targetMidRange)//if the ball is too far away break back to default movement.
         {
@@ -103,7 +103,7 @@ public class PlayerChaseBall : IPlayerState {
     public void ToMovementDesicion()
     {
         player.currentState = player.sPlayerMovementDecision;
-        Debug.Log(player.playerStats.playerName + " Left Chase State");
+        //Debug.Log(player.playerStats.playerName + " Left Chase State");
     }
 
     public void ToActionDesicion()

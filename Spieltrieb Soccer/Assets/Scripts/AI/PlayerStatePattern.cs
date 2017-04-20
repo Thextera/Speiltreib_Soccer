@@ -12,6 +12,8 @@ public class PlayerStatePattern : MonoBehaviour {
     public string state;
     private Vector2 startLocation;
     private bool disabledForGoal;
+    private bool dead = false;
+    public float reviveWaitTime = 1.5f; //how long a player will remain in teh wait state before resuming normal function.
 
     private float possessionTimer;
 
@@ -72,6 +74,19 @@ public class PlayerStatePattern : MonoBehaviour {
     // Update is called once per frame
     void FixedUpdate()
     {
+        //manage stares for health
+        if (playerStats.currentHealth <= 0)
+        {
+            //set player state to dead. this can never be overwritten unless the player is alive.
+            currentState = sPlayerDead;
+
+            //trigger kill payer only once.
+            if (dead == false)
+            {
+                KillPlayer();
+            }
+        }
+
         //print(currentState + " + " + gameObject);
         if (!disabledForGoal)
         {
@@ -93,6 +108,9 @@ public class PlayerStatePattern : MonoBehaviour {
                 currentState = sPlayerActionDecision;
             }
         }
+
+
+
 
 
     }
@@ -169,7 +187,7 @@ public class PlayerStatePattern : MonoBehaviour {
 
     private void WaitForWhistle()
     {
-        Debug.LogWarning("Waiting For Whistle");
+        //Debug.LogWarning("Waiting For Whistle");
         //when the players are waiting for the whistle make them stay in the waiting state.
         StopMovement();//hard
         currentState = sPlayerWait;
@@ -212,5 +230,54 @@ public class PlayerStatePattern : MonoBehaviour {
         disabledForGoal = false;
     }
 
+    /// <summary>
+    /// Kills player. Disabling collider and setting HP to a specific value. 
+    /// </summary>
+    public void KillPlayer()
+    {
+        //set refernce bool
+        dead = true;
+
+        //set health to a safer value.
+        playerStats.currentHealth = 0;
+
+        //Halt any movement from the player.
+        StopMovement();
+
+        //ensure state is dead. because due dilligence
+        currentState = sPlayerDead;
+
+        //disable Collider so that nothing hits teh dead player.
+        GetComponent<CircleCollider2D>().enabled = false;
+    }
+
+    /// <summary>
+    /// Revives player and sets health to a given % of their maximum.
+    /// </summary>
+    /// <param name="currentHeathPercent">% (1-100) of their maximum health a player should be revived with</param>
+    public void RevivePlayer(float currentHeathPercent)
+    {
+        dead = false;
+
+        //if the health % are outside of bounds correct them
+        if(currentHeathPercent > 100)
+        {
+            currentHeathPercent = 100;
+        }
+        else if(currentHeathPercent < 1)
+        {
+            currentHeathPercent = 1;
+        }
+
+        //set player's health to be a specified % of their max.
+        playerStats.currentHealth = playerStats.maxHealth / (currentHeathPercent /100);
+
+        //turn back on player collider.
+        GetComponent<CircleCollider2D>().enabled = true;
+
+        //reset the state tree.
+        currentState = sPlayerWait;
+        sPlayerWait.SetCurrentWait(reviveWaitTime);
+    }
 
 }
