@@ -8,13 +8,21 @@ using UnityEngine;
 /// </summary>
 public class Player : MonoBehaviour {
 
+    [Header("Important Classes")]
     public PlayerMove pm;
     public PlayerStatePattern psp;
     public SpriteRenderer IDRing;
 
+    [Header("Health")]
     public float maxHealth = 100;
     public float currentHealth;
 
+    [Header("IFrame")]
+    public bool hitIFrames;
+    public bool AOEIFrames;
+    public float IFrameDuration = 0.25f;
+
+    [Header("Statistics")]
     public float speed;
     public float attack;
     public float defence;
@@ -180,6 +188,43 @@ public class Player : MonoBehaviour {
     }
 
 
+    #region TakingDamage
 
+    //take damage from a direct hit from the ball.
+    public void TakeDamage(float damage)
+    {
+        //iframe counter to prevent spam damage. this might need to be tweaked or changed to acheive certain artistic effects.
+        if (!hitIFrames)
+        {
+            currentHealth -= damage;
+            hitIFrames = true;
+            Invoke("HitVulnerable", IFrameDuration);
+        }
+    }
 
+    //take damage from being caught in the AOE of the ball.
+    public void TakeAOEDamage(float damage)
+    {
+        //iframe counter to prevent spam damage. this might need to be tweaked or changed to acheive certain artistic effects.
+        if (!hitIFrames)
+        {
+            currentHealth -= damage;
+            hitIFrames = true;
+            Invoke("AOEVulnerable", IFrameDuration);
+        }
+    }
+
+    //reenable damage from being hit.
+    public void HitVulnerable()
+    {
+        hitIFrames = false;
+    }
+
+    //reenable damage from being in the AOE.
+    public void AOEVulnerable()
+    {
+        AOEIFrames = false;
+    }
+
+    #endregion
 }

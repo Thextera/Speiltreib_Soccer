@@ -38,6 +38,11 @@ public class PlayerStatePattern : MonoBehaviour {
         sPlayerActionDecision = new PlayerActionDecision(this);
         sPlayerMovementDecision = new PlayerMovementDecision(this);
         sPlayerMovingToPosition = new PlayerMovingToPosition(this);
+
+        //load an HP bar from the resources folder.
+        GameObject g = (GameObject)Instantiate(Resources.Load("Prefabs/HealthBar"));
+        g.SendMessage("SetOwner", playerStats);
+       
     }
 
     private void OnEnable()
@@ -69,6 +74,7 @@ public class PlayerStatePattern : MonoBehaviour {
         ballReference = FindObjectOfType<Ball>();
         movement = GetComponent<PlayerMove>();
         currentState = sPlayerWait;
+
     }
 
     // Update is called once per frame
@@ -279,5 +285,4 @@ public class PlayerStatePattern : MonoBehaviour {
         currentState = sPlayerWait;
         sPlayerWait.SetCurrentWait(reviveWaitTime);
     }
-
 }

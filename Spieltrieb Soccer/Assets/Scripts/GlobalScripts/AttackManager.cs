@@ -51,8 +51,8 @@ public class AttackManager : MonoBehaviour {
         AEFlamestrike flameStrike = new AEFlamestrike();
         AEDragonkick dragonKick = new AEDragonkick();
 
-        AttackDef fs = new AttackDef("FlameStrike", GameManager.Instance.AIActions["Attack"], abilityTypeDict["Attack"], 1.2f, 34, true, 3, 1.5f, flameStrike);
-        AttackDef dk = new AttackDef("DragonKick", GameManager.Instance.AIActions["Attack"], abilityTypeDict["Attack"], 1.2f, 34, false, 0, 1.5f, dragonKick);
+        AttackDef fs = new AttackDef("FlameStrike", GameManager.Instance.AIActions["Attack"], abilityTypeDict["Attack"], 1.2f, 35, 23, true, 15, 1.5f, flameStrike);
+        AttackDef dk = new AttackDef("DragonKick", GameManager.Instance.AIActions["Attack"], abilityTypeDict["Attack"], 1.2f, 34, 0, false, 0, 1.5f, dragonKick);
 
         print(fs + " " + dk);
         //this could potentially be exposed via a public array of these enteries. maybe?

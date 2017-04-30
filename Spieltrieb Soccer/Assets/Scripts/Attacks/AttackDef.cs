@@ -11,6 +11,7 @@ public class AttackDef
     private int parentAction; //does this attack count as an attack, a pass, a shoot, etc. Values will be compaired against the GameManager dict.
 
     private float attackFoundation; //damage the attack does
+    private float AOEFoundation;
     private bool AOE;//does the attack have an area effect?
     private float AOERadius; // how wide the effect can be.
     private float duration;//how long the ball is considered "in attack"
@@ -31,11 +32,12 @@ public class AttackDef
     /// <param name="initAOERadius"></param>
     /// <param name="initDuration"></param>
     /// <param name="initEffect"></param>
-    public AttackDef(string initName, int initParentAction, int initAbilityType, float initBallKickAmplifier, float initAttackFoundation, bool initAOE, float initAOERadius, float initDuration, IAttackEffect initEffect)
+    public AttackDef(string initName, int initParentAction, int initAbilityType, float initBallKickAmplifier, float initAttackFoundation, float initAOEFoundation, bool initAOE, float initAOERadius, float initDuration, IAttackEffect initEffect)
     {
         parentAction = initParentAction;
         attackFoundation = initAttackFoundation;
         AOE = initAOE;
+        AOEFoundation = initAOEFoundation;
         AOERadius = initAOERadius;
         duration = initDuration;
         abilityType = initAbilityType;
@@ -45,18 +47,41 @@ public class AttackDef
         effect = initEffect;
     }
 
-    public int GetParentAction()
-    {
-        return parentAction;
-    }
-
     public void TriggerEffect(Ball b)
     {
         effect.AttackEffect(b);
     }
 
+
+    //standard getters. pretty boiler-plate.
+
+    public int GetParentAction()
+    {
+        return parentAction;
+    }
+
     public float GetDamage()
     {
         return attackFoundation;
+    }
+
+    public float GetAOEDamage()
+    {
+        return AOEFoundation;
+    }
+
+    public float GetDuration()
+    {
+        return duration;
+    }
+
+    public bool GetAOE()
+    {
+        return AOE;
+    }
+
+    public float GetAOERadius()
+    {
+        return AOERadius;
     }
 }

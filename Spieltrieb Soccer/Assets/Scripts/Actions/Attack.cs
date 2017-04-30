@@ -40,8 +40,12 @@ public class Attack {
         //take the direction and factor in player attack stats.
         kickDirection = new Vector2(kickDirection.x * pl.playerStats.attack * pl.playerStats.attackStrengthMultiplier * 4, kickDirection.y * pl.playerStats.attack * pl.playerStats.attackStrengthMultiplier);
 
+        //calculate the damage the shot should do. 
+        float damage = pl.playerStats.attack;
+
         //FIRE IN THE HOLE!
         GameManager.Instance.GetComponent<BallKick>().KickBall(kickDirection);
+        GameManager.Instance.ballReference.GetComponent<BallAttack>().DefaultAttack(damage,GameManager.Instance.defaultAttackDuration, pl.playerStats);
         pl.dePossessBall();
 
         Debug.Log("Attack Target is: " + de.target);

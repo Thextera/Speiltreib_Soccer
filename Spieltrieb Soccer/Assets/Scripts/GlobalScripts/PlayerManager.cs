@@ -47,6 +47,7 @@ public class PlayerManager : MonoBehaviour {
     public Image fadeScreenImage;
     public Image countdownREADYImage;
     public Image countdownGOImage;
+    public GameObject playerHealthHolder;
 
     public float screenFadeDuration;
     public float readyFadeLength;

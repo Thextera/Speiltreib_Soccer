@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviour {
     public float timeSlowDuration = 0.75f;
     public float GoalResetDelay = 0.75f;
     public float universalAnimationDuration = 0.33f;
+    public float defaultAttackDuration = 1.2f;
 
     PlayerInit[] testInitList;
 
