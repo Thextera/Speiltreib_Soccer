@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 /// <summary>
@@ -54,6 +55,12 @@ public class GameManager : MonoBehaviour {
     public float GoalResetDelay = 0.75f;
     public float universalAnimationDuration = 0.33f;
     public float defaultAttackDuration = 1.2f;
+    public float gameDuration = 120;
+
+    private float resetTimer;
+
+    public int leftTeamDeath;
+    public int rightTeamDeath;
 
     PlayerInit[] testInitList;
 
@@ -154,6 +161,7 @@ public class GameManager : MonoBehaviour {
             }
         }
 
+        gameTimer = gameDuration;
         EventManager.Instance.GameBegin();
 
 
@@ -164,17 +172,33 @@ public class GameManager : MonoBehaviour {
 
     private void Update()
     {
+        //debug reset scene
+        if(Input.GetKey(KeyCode.Space))
+        {
+            resetTimer++;
+        }
+        else
+        {
+            resetTimer = 0;
+        }
+        if(resetTimer > 15)
+        {
+            DebugLoadScene();
+        }
+
+
         //Time.timeScale = gameSpeed;
         //sets a timer for the game. slows with slow-motion.
         if (gameTimerRunning)
         {
-            gameTimer += Time.deltaTime * Time.timeScale;
+            gameTimer -= Time.deltaTime * Time.timeScale;
         }
         
-
-        if (Input.GetKeyDown(KeyCode.Space) == true)
+        //if time runs out end the game.
+        if(gameTimer <= 0)
         {
-            EventManager.Instance.WhistleBlow();
+            gameTimer = 0;
+            EndGame();
         }
     }
 
@@ -198,6 +222,20 @@ public class GameManager : MonoBehaviour {
     private void ContinueGame()
     {
         gameTimerRunning = true;
+    }
+
+    /// <summary>
+    /// when called this function ends the game. 
+    /// </summary>
+    private void EndGame()
+    {
+        Invoke("DebugLoadScene", 5);
+    }
+
+    private void DebugLoadScene()
+    {
+        Time.timeScale = 1;
+        SceneManager.LoadScene(0);
     }
 
 }

@@ -241,6 +241,16 @@ public class PlayerStatePattern : MonoBehaviour {
     /// </summary>
     public void KillPlayer()
     {
+        //tell the game manager someone died.
+        if(playerStats.team == GameManager.Instance.teams["Right"])
+        {
+            GameManager.Instance.rightTeamDeath++;
+        }
+        else
+        {
+            GameManager.Instance.leftTeamDeath++;
+        }
+
         //set refernce bool
         dead = true;
 
@@ -263,6 +273,16 @@ public class PlayerStatePattern : MonoBehaviour {
     /// <param name="currentHeathPercent">% (1-100) of their maximum health a player should be revived with</param>
     public void RevivePlayer(float currentHeathPercent)
     {
+        //tell the game manager that somone was revived.
+        if (playerStats.team == GameManager.Instance.teams["Right"])
+        {
+            GameManager.Instance.rightTeamDeath++;
+        }
+        else
+        {
+            GameManager.Instance.leftTeamDeath++;
+        }
+
         dead = false;
 
         //if the health % are outside of bounds correct them

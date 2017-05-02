@@ -203,8 +203,12 @@ public class BallAttack : MonoBehaviour {
         //perhaps this could be done more efficiently.
         if (damaging && collision.gameObject.GetComponent<Player>() != null && collision.gameObject.GetComponent<Player>().team != currentAttacker.team)
         {
-            collision.gameObject.SendMessage("TakeDamage", currentAttackDef.GetDamage());
-            print("IM MELTING! D:");
+            //TODO double check that the default attack has a default attack definition.
+            if (currentAttackDef != null)
+            {
+                collision.gameObject.SendMessage("TakeDamage", currentAttackDef.GetDamage());
+                print("IM MELTING! D:");
+            }
         }
     }
 
